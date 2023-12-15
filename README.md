@@ -12,9 +12,7 @@ This project implements a secure lock system using Proteus 8 Professional for si
   - [Usage](#usage)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
-- [License](#license)
 - [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
 
 ## Overview
 
