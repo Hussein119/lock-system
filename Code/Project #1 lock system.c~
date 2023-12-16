@@ -74,7 +74,7 @@ void main(void)
 			currentUser.id = EE_Read(address);
 			if (currentUser.id == enteredID)
 				{
-                displayMessage("User Found", 5000);
+                displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
 				address += sizeof(users[i].id);    // Increment for ID
 				lcd_printf("%d", user[i].pc);
 				delay_ms(5000);

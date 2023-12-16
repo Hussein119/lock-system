@@ -76,7 +76,7 @@ void main(void)
 				{
                 displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
 				address += sizeof(users[i].id);    // Increment for ID
-				lcd_printf("%d", user[i].pc);
+				lcd_printf("%d", users[i].pc);
 				delay_ms(5000);
 				currentUser.pc = EE_Read(address); // store current user pc \
                 
