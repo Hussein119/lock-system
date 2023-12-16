@@ -14,7 +14,6 @@
 #define bit_clr(r, b) r &= ~(1 << b)
 
 char keypad();
-
 unsigned char EE_Read(unsigned int address);
 void EE_Write(unsigned int address, unsigned char data);
 void EE_WriteString(unsigned int address, const char *str);
@@ -22,6 +21,7 @@ void EE_ReadString(unsigned int address, char *buffer, unsigned int length);
 void initializeUsers();
 void displayMessage(char *message, int delay_ms_value);
 int enterValueWithKeypad(char *buffer);
+void generateTone();
 
 // User structure to store user data
 typedef struct
@@ -52,6 +52,10 @@ void main(void)
 	// Set the door as input (now by default the door is closed)
 	DDRB .0 = 0;
 	PORTB .0 = 1; // turn on pull up resistance
+    
+    // Set the speaker as a output 
+    DDRD.7 = 1;
+    PORTD.7 = 1; // Set it to 0 initially
 
 	// Initialize user data in EEPROM
 	initializeUsers();
@@ -76,13 +80,9 @@ void main(void)
 
 				if (strcmp(currentUser.id, enteredID) == 0)
 					{
-					displayMessage("User Found", 1000);
 
 					address += sizeof(users[i].id);
 					EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
-
-					lcd_printf(",Stored PC: %s", currentUser.pc);
-					delay_ms(2000);
 
 					displayMessage("Enter your PC: ", 1000);
 
@@ -96,6 +96,8 @@ void main(void)
 							}
 						else
 							displayMessage("Sorry wrong PC", 1000);
+                            // one peep alarm
+                            generateTone();
 						}
 
 					userFound = 1;
@@ -111,6 +113,8 @@ void main(void)
 			{
 			displayMessage("Wrong ID", 1000);
 			// Two peeps alarm
+            generateTone();
+            generateTone();
 			}
 
 		delay_ms(2000);
@@ -257,4 +261,12 @@ int enterValueWithKeypad(char *buffer)
     delay_ms(1000);
 
     return 1;  // Return a non-zero value to indicate success
+}
+void generateTone()
+{
+    PORTD.7 = 1;  // Set PD7 HIGH
+    delay_ms(500);  // Adjust duration as needed
+    PORTD.7 = 0;  // Set PD7 LOW
+    delay_ms(500);  // Pause between tones
+    PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
 }

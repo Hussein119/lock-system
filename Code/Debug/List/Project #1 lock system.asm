@@ -1503,23 +1503,23 @@ __GLOBAL_INI_TBL:
 	.DW  _0x4*2
 
 	.DW  0x10
-	.DW  _0xC
+	.DW  _0x10
 	.DW  _0x0*2+25
 
 	.DW  0x10
-	.DW  _0xC+16
+	.DW  _0x10+16
 	.DW  _0x0*2+41
 
 	.DW  0x08
-	.DW  _0xC+32
+	.DW  _0x10+32
 	.DW  _0x0*2+57
 
 	.DW  0x0F
-	.DW  _0xC+40
+	.DW  _0x10+40
 	.DW  _0x0*2+65
 
 	.DW  0x09
-	.DW  _0xC+55
+	.DW  _0x10+55
 	.DW  _0x0*2+80
 
 	.DW  0x02
@@ -1622,6 +1622,7 @@ __GLOBAL_INI_END:
 ;void initializeUsers();
 ;void displayMessage(char *message, int delay_ms_value);
 ;int enterValueWithKeypad(char *buffer);
+;void generateTone();
 
 	.DSEG
 _0x3:
@@ -1651,20 +1652,26 @@ _main:
 ; 0000 0036 PORTB .0 = 1; // turn on pull up resistance
 	SBI  0x18,0
 ; 0000 0037 
-; 0000 0038 // Initialize user data in EEPROM
-; 0000 0039 initializeUsers();
+; 0000 0038 // Set the speaker as a output
+; 0000 0039 DDRD.7 = 1;
+	SBI  0x11,7
+; 0000 003A PORTD.7 = 1; // Set it to 0 initially
+	SBI  0x12,7
+; 0000 003B 
+; 0000 003C // Initialize user data in EEPROM
+; 0000 003D initializeUsers();
 	RCALL _initializeUsers
-; 0000 003A 
-; 0000 003B while (1)
-_0x9:
-; 0000 003C {
-; 0000 003D char enteredID[4];  // Change data type to string
-; 0000 003E User currentUser;
-; 0000 003F unsigned int address = 0;
-; 0000 0040 int userFound = 0;
-; 0000 0041 int i;
-; 0000 0042 
-; 0000 0043 displayMessage("Enter your ID: ", 1000);
+; 0000 003E 
+; 0000 003F while (1)
+_0xD:
+; 0000 0040 {
+; 0000 0041 char enteredID[4];  // Change data type to string
+; 0000 0042 User currentUser;
+; 0000 0043 unsigned int address = 0;
+; 0000 0044 int userFound = 0;
+; 0000 0045 int i;
+; 0000 0046 
+; 0000 0047 displayMessage("Enter your ID: ", 1000);
 	SBIW R28,20
 	LDI  R30,LOW(0)
 	STD  Y+2,R30
@@ -1676,19 +1683,19 @@ _0x9:
 ;	address -> Y+4
 ;	userFound -> Y+2
 ;	i -> Y+0
-	__POINTW1MN _0xC,0
+	__POINTW1MN _0x10,0
 	RCALL SUBOPT_0x0
-; 0000 0044 
-; 0000 0045 if (enterValueWithKeypad(enteredID))
+; 0000 0048 
+; 0000 0049 if (enterValueWithKeypad(enteredID))
 	MOVW R26,R28
 	ADIW R26,16
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
 	BRNE PC+2
-	RJMP _0xD
-; 0000 0046 {
-; 0000 0047 char enteredPC[4];
-; 0000 0048 for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
+	RJMP _0x11
+; 0000 004A {
+; 0000 004B char enteredPC[4];
+; 0000 004C for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 	SBIW R28,4
 ;	enteredID -> Y+20
 ;	currentUser -> Y+10
@@ -1699,23 +1706,23 @@ _0x9:
 	LDI  R30,LOW(0)
 	STD  Y+4,R30
 	STD  Y+4+1,R30
-_0xF:
+_0x13:
 	LDD  R26,Y+4
 	LDD  R27,Y+4+1
 	SBIW R26,5
-	BRGE _0x10
-; 0000 0049 {
-; 0000 004A address += sizeof(users[i].name);
+	BRGE _0x14
+; 0000 004D {
+; 0000 004E address += sizeof(users[i].name);
 	LDD  R30,Y+8
 	LDD  R31,Y+8+1
 	ADIW R30,2
 	RCALL SUBOPT_0x1
-; 0000 004B EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
+; 0000 004F EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
 	MOVW R30,R28
 	ADIW R30,14
 	RCALL SUBOPT_0x2
-; 0000 004C 
-; 0000 004D if (strcmp(currentUser.id, enteredID) == 0)
+; 0000 0050 
+; 0000 0051 if (strcmp(currentUser.id, enteredID) == 0)
 	MOVW R30,R28
 	ADIW R30,12
 	ST   -Y,R31
@@ -1724,30 +1731,30 @@ _0xF:
 	ADIW R26,22
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0x11
-; 0000 004E {
-; 0000 004F 
-; 0000 0050 address += sizeof(users[i].id);
+	BRNE _0x15
+; 0000 0052 {
+; 0000 0053 
+; 0000 0054 address += sizeof(users[i].id);
 	LDD  R30,Y+8
 	LDD  R31,Y+8+1
 	ADIW R30,4
 	RCALL SUBOPT_0x1
-; 0000 0051 EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
+; 0000 0055 EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
 	MOVW R30,R28
 	ADIW R30,18
 	RCALL SUBOPT_0x2
-; 0000 0052 
-; 0000 0053 displayMessage("Enter your PC: ", 1000);
-	__POINTW1MN _0xC,16
+; 0000 0056 
+; 0000 0057 displayMessage("Enter your PC: ", 1000);
+	__POINTW1MN _0x10,16
 	RCALL SUBOPT_0x0
-; 0000 0054 
-; 0000 0055 if (enterValueWithKeypad(enteredPC))
+; 0000 0058 
+; 0000 0059 if (enterValueWithKeypad(enteredPC))
 	MOVW R26,R28
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
-	BREQ _0x12
-; 0000 0056 {
-; 0000 0057 if (strcmp(currentUser.pc, enteredPC) == 0)
+	BREQ _0x16
+; 0000 005A {
+; 0000 005B if (strcmp(currentUser.pc, enteredPC) == 0)
 	MOVW R30,R28
 	ADIW R30,16
 	ST   -Y,R31
@@ -1756,319 +1763,326 @@ _0xF:
 	ADIW R26,2
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0x13
-; 0000 0058 {
-; 0000 0059 displayMessage("Welcome", 1000);
-	__POINTW1MN _0xC,32
+	BRNE _0x17
+; 0000 005C {
+; 0000 005D displayMessage("Welcome", 1000);
+	__POINTW1MN _0x10,32
 	RCALL SUBOPT_0x0
-; 0000 005A // Open the door
-; 0000 005B DDRB .0 = 1;
+; 0000 005E // Open the door
+; 0000 005F DDRB .0 = 1;
 	SBI  0x17,0
-; 0000 005C }
-; 0000 005D else
-	RJMP _0x16
-_0x13:
-; 0000 005E displayMessage("Sorry wrong PC", 1000);
-	__POINTW1MN _0xC,40
+; 0000 0060 }
+; 0000 0061 else
+	RJMP _0x1A
+_0x17:
+; 0000 0062 displayMessage("Sorry wrong PC", 1000);
+	__POINTW1MN _0x10,40
 	RCALL SUBOPT_0x0
-; 0000 005F }
+; 0000 0063 // one peep alarm
+; 0000 0064 generateTone();
+_0x1A:
+	RCALL _generateTone
+; 0000 0065 }
+; 0000 0066 
+; 0000 0067 userFound = 1;
 _0x16:
-; 0000 0060 
-; 0000 0061 userFound = 1;
-_0x12:
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
 	STD  Y+6,R30
 	STD  Y+6+1,R31
-; 0000 0062 break;
-	RJMP _0x10
-; 0000 0063 }
-; 0000 0064 
-; 0000 0065 address += sizeof(users[i].id);
-_0x11:
+; 0000 0068 break;
+	RJMP _0x14
+; 0000 0069 }
+; 0000 006A 
+; 0000 006B address += sizeof(users[i].id);
+_0x15:
 	RCALL SUBOPT_0x3
-; 0000 0066 address += sizeof(users[i].pc);
+; 0000 006C address += sizeof(users[i].pc);
 	RCALL SUBOPT_0x3
-; 0000 0067 }
+; 0000 006D }
 	LDD  R30,Y+4
 	LDD  R31,Y+4+1
 	ADIW R30,1
 	STD  Y+4,R30
 	STD  Y+4+1,R31
-	RJMP _0xF
-_0x10:
-; 0000 0068 }
+	RJMP _0x13
+_0x14:
+; 0000 006E }
 	ADIW R28,4
-; 0000 0069 
-; 0000 006A if (!userFound)
-_0xD:
+; 0000 006F 
+; 0000 0070 if (!userFound)
+_0x11:
 	LDD  R30,Y+2
 	LDD  R31,Y+2+1
 	SBIW R30,0
-	BRNE _0x17
-; 0000 006B {
-; 0000 006C displayMessage("Wrong ID", 1000);
-	__POINTW1MN _0xC,55
+	BRNE _0x1B
+; 0000 0071 {
+; 0000 0072 displayMessage("Wrong ID", 1000);
+	__POINTW1MN _0x10,55
 	RCALL SUBOPT_0x0
-; 0000 006D // Two peeps alarm
-; 0000 006E }
-; 0000 006F 
-; 0000 0070 delay_ms(2000);
-_0x17:
+; 0000 0073 // Two peeps alarm
+; 0000 0074 generateTone();
+	RCALL _generateTone
+; 0000 0075 generateTone();
+	RCALL _generateTone
+; 0000 0076 }
+; 0000 0077 
+; 0000 0078 delay_ms(2000);
+_0x1B:
 	LDI  R26,LOW(2000)
 	LDI  R27,HIGH(2000)
 	RCALL _delay_ms
-; 0000 0071 }
+; 0000 0079 }
 	ADIW R28,20
-	RJMP _0x9
-; 0000 0072 }
-_0x18:
-	RJMP _0x18
+	RJMP _0xD
+; 0000 007A }
+_0x1C:
+	RJMP _0x1C
 ; .FEND
 
 	.DSEG
-_0xC:
+_0x10:
 	.BYTE 0x40
 ;char keypad()
-; 0000 0075 {
+; 0000 007D {
 
 	.CSEG
 _keypad:
 ; .FSTART _keypad
-; 0000 0076 while (1)
-_0x19:
-; 0000 0077 {
-; 0000 0078 PORTC .0 = 0;
+; 0000 007E while (1)
+_0x1D:
+; 0000 007F {
+; 0000 0080 PORTC .0 = 0;
 	CBI  0x15,0
-; 0000 0079 PORTC .1 = 1;
+; 0000 0081 PORTC .1 = 1;
 	SBI  0x15,1
-; 0000 007A PORTC .2 = 1;
+; 0000 0082 PORTC .2 = 1;
 	SBI  0x15,2
-; 0000 007B 
-; 0000 007C switch (PINC)
+; 0000 0083 
+; 0000 0084 switch (PINC)
 	IN   R30,0x13
-; 0000 007D {
-; 0000 007E case 0b11110110:
+; 0000 0085 {
+; 0000 0086 case 0b11110110:
 	CPI  R30,LOW(0xF6)
-	BRNE _0x25
-; 0000 007F while (PINC .3 == 0);
-_0x26:
+	BRNE _0x29
+; 0000 0087 while (PINC .3 == 0);
+_0x2A:
 	SBIS 0x13,3
-	RJMP _0x26
-; 0000 0080 return 1;
+	RJMP _0x2A
+; 0000 0088 return 1;
 	LDI  R30,LOW(1)
 	RET
-; 0000 0081 case 0b11101110:
-_0x25:
+; 0000 0089 case 0b11101110:
+_0x29:
 	CPI  R30,LOW(0xEE)
-	BRNE _0x29
-; 0000 0082 while (PINC .4 == 0);
-_0x2A:
+	BRNE _0x2D
+; 0000 008A while (PINC .4 == 0);
+_0x2E:
 	SBIS 0x13,4
-	RJMP _0x2A
-; 0000 0083 return 4;
+	RJMP _0x2E
+; 0000 008B return 4;
 	LDI  R30,LOW(4)
 	RET
-; 0000 0084 case 0b11011110:
-_0x29:
+; 0000 008C case 0b11011110:
+_0x2D:
 	CPI  R30,LOW(0xDE)
-	BRNE _0x2D
-; 0000 0085 while (PINC .5 == 0);
-_0x2E:
+	BRNE _0x31
+; 0000 008D while (PINC .5 == 0);
+_0x32:
 	SBIS 0x13,5
-	RJMP _0x2E
-; 0000 0086 return 7;
+	RJMP _0x32
+; 0000 008E return 7;
 	LDI  R30,LOW(7)
 	RET
-; 0000 0087 case 0b10111110:
-_0x2D:
+; 0000 008F case 0b10111110:
+_0x31:
 	CPI  R30,LOW(0xBE)
-	BRNE _0x24
-; 0000 0088 while (PINC .6 == 0);
-_0x32:
+	BRNE _0x28
+; 0000 0090 while (PINC .6 == 0);
+_0x36:
 	SBIS 0x13,6
-	RJMP _0x32
-; 0000 0089 return 10;
+	RJMP _0x36
+; 0000 0091 return 10;
 	LDI  R30,LOW(10)
 	RET
-; 0000 008A }
-_0x24:
-; 0000 008B 
-; 0000 008C PORTC .0 = 1;
+; 0000 0092 }
+_0x28:
+; 0000 0093 
+; 0000 0094 PORTC .0 = 1;
 	SBI  0x15,0
-; 0000 008D PORTC .1 = 0;
+; 0000 0095 PORTC .1 = 0;
 	CBI  0x15,1
-; 0000 008E PORTC .2 = 1;
+; 0000 0096 PORTC .2 = 1;
 	SBI  0x15,2
-; 0000 008F 
-; 0000 0090 switch (PINC)
+; 0000 0097 
+; 0000 0098 switch (PINC)
 	IN   R30,0x13
-; 0000 0091 {
-; 0000 0092 case 0b11110101:
+; 0000 0099 {
+; 0000 009A case 0b11110101:
 	CPI  R30,LOW(0xF5)
-	BRNE _0x3E
-; 0000 0093 while (PINC .3 == 0);
-_0x3F:
+	BRNE _0x42
+; 0000 009B while (PINC .3 == 0);
+_0x43:
 	SBIS 0x13,3
-	RJMP _0x3F
-; 0000 0094 return 2;
+	RJMP _0x43
+; 0000 009C return 2;
 	LDI  R30,LOW(2)
 	RET
-; 0000 0095 case 0b11101101:
-_0x3E:
+; 0000 009D case 0b11101101:
+_0x42:
 	CPI  R30,LOW(0xED)
-	BRNE _0x42
-; 0000 0096 while (PINC .4 == 0);
-_0x43:
+	BRNE _0x46
+; 0000 009E while (PINC .4 == 0);
+_0x47:
 	SBIS 0x13,4
-	RJMP _0x43
-; 0000 0097 return 5;
+	RJMP _0x47
+; 0000 009F return 5;
 	LDI  R30,LOW(5)
 	RET
-; 0000 0098 case 0b11011101:
-_0x42:
+; 0000 00A0 case 0b11011101:
+_0x46:
 	CPI  R30,LOW(0xDD)
-	BRNE _0x46
-; 0000 0099 while (PINC .5 == 0);
-_0x47:
+	BRNE _0x4A
+; 0000 00A1 while (PINC .5 == 0);
+_0x4B:
 	SBIS 0x13,5
-	RJMP _0x47
-; 0000 009A return 8;
+	RJMP _0x4B
+; 0000 00A2 return 8;
 	LDI  R30,LOW(8)
 	RET
-; 0000 009B case 0b10111101:
-_0x46:
+; 0000 00A3 case 0b10111101:
+_0x4A:
 	CPI  R30,LOW(0xBD)
-	BRNE _0x3D
-; 0000 009C while (PINC .6 == 0);
-_0x4B:
+	BRNE _0x41
+; 0000 00A4 while (PINC .6 == 0);
+_0x4F:
 	SBIS 0x13,6
-	RJMP _0x4B
-; 0000 009D return 0;
+	RJMP _0x4F
+; 0000 00A5 return 0;
 	LDI  R30,LOW(0)
 	RET
-; 0000 009E }
-_0x3D:
-; 0000 009F 
-; 0000 00A0 PORTC .0 = 1;
+; 0000 00A6 }
+_0x41:
+; 0000 00A7 
+; 0000 00A8 PORTC .0 = 1;
 	SBI  0x15,0
-; 0000 00A1 PORTC .1 = 1;
+; 0000 00A9 PORTC .1 = 1;
 	SBI  0x15,1
-; 0000 00A2 PORTC .2 = 0;
+; 0000 00AA PORTC .2 = 0;
 	CBI  0x15,2
-; 0000 00A3 
-; 0000 00A4 switch (PINC)
+; 0000 00AB 
+; 0000 00AC switch (PINC)
 	IN   R30,0x13
-; 0000 00A5 {
-; 0000 00A6 case 0b11110011:
+; 0000 00AD {
+; 0000 00AE case 0b11110011:
 	CPI  R30,LOW(0xF3)
-	BRNE _0x57
-; 0000 00A7 while (PINC .3 == 0);
-_0x58:
+	BRNE _0x5B
+; 0000 00AF while (PINC .3 == 0);
+_0x5C:
 	SBIS 0x13,3
-	RJMP _0x58
-; 0000 00A8 return 3;
+	RJMP _0x5C
+; 0000 00B0 return 3;
 	LDI  R30,LOW(3)
 	RET
-; 0000 00A9 case 0b11101011:
-_0x57:
+; 0000 00B1 case 0b11101011:
+_0x5B:
 	CPI  R30,LOW(0xEB)
-	BRNE _0x5B
-; 0000 00AA while (PINC .4 == 0);
-_0x5C:
+	BRNE _0x5F
+; 0000 00B2 while (PINC .4 == 0);
+_0x60:
 	SBIS 0x13,4
-	RJMP _0x5C
-; 0000 00AB return 6;
+	RJMP _0x60
+; 0000 00B3 return 6;
 	LDI  R30,LOW(6)
 	RET
-; 0000 00AC case 0b11011011:
-_0x5B:
+; 0000 00B4 case 0b11011011:
+_0x5F:
 	CPI  R30,LOW(0xDB)
-	BRNE _0x5F
-; 0000 00AD while (PINC .5 == 0);
-_0x60:
+	BRNE _0x63
+; 0000 00B5 while (PINC .5 == 0);
+_0x64:
 	SBIS 0x13,5
-	RJMP _0x60
-; 0000 00AE return 9;
+	RJMP _0x64
+; 0000 00B6 return 9;
 	LDI  R30,LOW(9)
 	RET
-; 0000 00AF case 0b10111011:
-_0x5F:
+; 0000 00B7 case 0b10111011:
+_0x63:
 	CPI  R30,LOW(0xBB)
-	BRNE _0x56
-; 0000 00B0 while (PINC .6 == 0);
-_0x64:
+	BRNE _0x5A
+; 0000 00B8 while (PINC .6 == 0);
+_0x68:
 	SBIS 0x13,6
-	RJMP _0x64
-; 0000 00B1 return 11;
+	RJMP _0x68
+; 0000 00B9 return 11;
 	LDI  R30,LOW(11)
 	RET
-; 0000 00B2 }
-_0x56:
-; 0000 00B3 }
-	RJMP _0x19
-; 0000 00B4 }
+; 0000 00BA }
+_0x5A:
+; 0000 00BB }
+	RJMP _0x1D
+; 0000 00BC }
 ; .FEND
 ;unsigned char EE_Read(unsigned int address)
-; 0000 00B7 {
+; 0000 00BF {
 _EE_Read:
 ; .FSTART _EE_Read
-; 0000 00B8 while (EECR .1 == 1); // Wait till EEPROM is ready
+; 0000 00C0 while (EECR .1 == 1); // Wait till EEPROM is ready
 	ST   -Y,R17
 	ST   -Y,R16
 	MOVW R16,R26
 ;	address -> R16,R17
-_0x67:
+_0x6B:
 	SBIC 0x1C,1
-	RJMP _0x67
-; 0000 00B9 EEAR = address;       // Prepare the address you want to read from
+	RJMP _0x6B
+; 0000 00C1 EEAR = address;       // Prepare the address you want to read from
 	__OUTWR 16,17,30
-; 0000 00BA EECR .0 = 1;          // Execute read command
+; 0000 00C2 EECR .0 = 1;          // Execute read command
 	SBI  0x1C,0
-; 0000 00BB return EEDR;
+; 0000 00C3 return EEDR;
 	IN   R30,0x1D
 	RJMP _0x2080003
-; 0000 00BC }
+; 0000 00C4 }
 ; .FEND
 ;void EE_Write(unsigned int address, unsigned char data)
-; 0000 00BF {
+; 0000 00C7 {
 _EE_Write:
 ; .FSTART _EE_Write
-; 0000 00C0 while (EECR .1 == 1); // Wait till EEPROM is ready
+; 0000 00C8 while (EECR .1 == 1); // Wait till EEPROM is ready
 	RCALL __SAVELOCR4
 	MOV  R17,R26
 	__GETWRS 18,19,4
 ;	address -> R18,R19
 ;	data -> R17
-_0x6C:
+_0x70:
 	SBIC 0x1C,1
-	RJMP _0x6C
-; 0000 00C1 EEAR = address;       // Prepare the address you want to read from
+	RJMP _0x70
+; 0000 00C9 EEAR = address;       // Prepare the address you want to read from
 	__OUTWR 18,19,30
-; 0000 00C2 EEDR = data;          // Prepare the data you want to write in the address above
+; 0000 00CA EEDR = data;          // Prepare the data you want to write in the address above
 	OUT  0x1D,R17
-; 0000 00C3 EECR .2 = 1;          // Master write enable
+; 0000 00CB EECR .2 = 1;          // Master write enable
 	SBI  0x1C,2
-; 0000 00C4 EECR .1 = 1;          // Write Enable
+; 0000 00CC EECR .1 = 1;          // Write Enable
 	SBI  0x1C,1
-; 0000 00C5 }
+; 0000 00CD }
 	RJMP _0x2080004
 ; .FEND
 ;void EE_WriteString(unsigned int address, const char *str)
-; 0000 00C8 {
+; 0000 00D0 {
 _EE_WriteString:
 ; .FSTART _EE_WriteString
-; 0000 00C9 // Write each character of the string to EEPROM
-; 0000 00CA while (*str)
+; 0000 00D1 // Write each character of the string to EEPROM
+; 0000 00D2 while (*str)
 	RCALL SUBOPT_0x4
 ;	address -> R18,R19
 ;	*str -> R16,R17
-_0x73:
+_0x77:
 	MOVW R26,R16
 	LD   R30,X
 	CPI  R30,0
-	BREQ _0x75
-; 0000 00CB EE_Write(address++, *str++);
+	BREQ _0x79
+; 0000 00D3 EE_Write(address++, *str++);
 	MOVW R30,R18
 	__ADDWRN 18,19,1
 	ST   -Y,R31
@@ -2076,22 +2090,22 @@ _0x73:
 	__ADDWRN 16,17,1
 	LD   R26,X
 	RCALL _EE_Write
-	RJMP _0x73
-_0x75:
-; 0000 00CD EE_Write(address, '\0');
+	RJMP _0x77
+_0x79:
+; 0000 00D5 EE_Write(address, '\0');
 	ST   -Y,R19
 	ST   -Y,R18
 	LDI  R26,LOW(0)
 	RCALL _EE_Write
-; 0000 00CE }
+; 0000 00D6 }
 	RJMP _0x2080004
 ; .FEND
 ;void EE_ReadString(unsigned int address, char *buffer, unsigned int length)
-; 0000 00D1 {
+; 0000 00D9 {
 _EE_ReadString:
 ; .FSTART _EE_ReadString
-; 0000 00D2 unsigned int i;
-; 0000 00D3 for (i = 0; i < length; ++i)
+; 0000 00DA unsigned int i;
+; 0000 00DB for (i = 0; i < length; ++i)
 	RCALL __SAVELOCR6
 	MOVW R18,R26
 	__GETWRS 20,21,6
@@ -2100,11 +2114,11 @@ _EE_ReadString:
 ;	length -> R18,R19
 ;	i -> R16,R17
 	__GETWRN 16,17,0
-_0x77:
+_0x7B:
 	__CPWRR 16,17,18,19
-	BRSH _0x78
-; 0000 00D4 {
-; 0000 00D5 buffer[i] = EE_Read(address + i);
+	BRSH _0x7C
+; 0000 00DC {
+; 0000 00DD buffer[i] = EE_Read(address + i);
 	MOVW R30,R16
 	ADD  R30,R20
 	ADC  R31,R21
@@ -2118,40 +2132,40 @@ _0x77:
 	POP  R26
 	POP  R27
 	ST   X,R30
-; 0000 00D6 if (buffer[i] == '\0')
+; 0000 00DE if (buffer[i] == '\0')
 	MOVW R30,R16
 	ADD  R30,R20
 	ADC  R31,R21
 	LD   R30,Z
 	CPI  R30,0
-	BREQ _0x78
-; 0000 00D7 break;
-; 0000 00D8 }
+	BREQ _0x7C
+; 0000 00DF break;
+; 0000 00E0 }
 	__ADDWRN 16,17,1
-	RJMP _0x77
-_0x78:
-; 0000 00D9 }
+	RJMP _0x7B
+_0x7C:
+; 0000 00E1 }
 	RCALL __LOADLOCR6
 	ADIW R28,10
 	RET
 ; .FEND
 ;void initializeUsers()
-; 0000 00DC {
+; 0000 00E4 {
 _initializeUsers:
 ; .FSTART _initializeUsers
-; 0000 00DD unsigned int address = 0;
-; 0000 00DE int i;
-; 0000 00DF for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
+; 0000 00E5 unsigned int address = 0;
+; 0000 00E6 int i;
+; 0000 00E7 for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 	RCALL __SAVELOCR4
 ;	address -> R16,R17
 ;	i -> R18,R19
 	__GETWRN 16,17,0
 	__GETWRN 18,19,0
-_0x7B:
+_0x7F:
 	__CPWRN 18,19,5
-	BRGE _0x7C
-; 0000 00E0 {
-; 0000 00E1 EE_WriteString(address, users[i].name);
+	BRGE _0x80
+; 0000 00E8 {
+; 0000 00E9 EE_WriteString(address, users[i].name);
 	RCALL SUBOPT_0x5
 	SUBI R30,LOW(-_users)
 	SBCI R31,HIGH(-_users)
@@ -2160,53 +2174,53 @@ _0x7B:
 	LD   R31,X+
 	MOVW R26,R30
 	RCALL _EE_WriteString
-; 0000 00E2 address += sizeof(users[i].name);
+; 0000 00EA address += sizeof(users[i].name);
 	__ADDWRN 16,17,2
-; 0000 00E3 
-; 0000 00E4 EE_WriteString(address, users[i].id);
+; 0000 00EB 
+; 0000 00EC EE_WriteString(address, users[i].id);
 	RCALL SUBOPT_0x5
 	__ADDW1MN _users,2
 	RCALL SUBOPT_0x6
-; 0000 00E5 address += sizeof(users[i].id);
-; 0000 00E6 
-; 0000 00E7 EE_WriteString(address, users[i].pc);
+; 0000 00ED address += sizeof(users[i].id);
+; 0000 00EE 
+; 0000 00EF EE_WriteString(address, users[i].pc);
 	RCALL SUBOPT_0x5
 	__ADDW1MN _users,6
 	RCALL SUBOPT_0x6
-; 0000 00E8 address += sizeof(users[i].pc);
-; 0000 00E9 }
+; 0000 00F0 address += sizeof(users[i].pc);
+; 0000 00F1 }
 	__ADDWRN 18,19,1
-	RJMP _0x7B
-_0x7C:
-; 0000 00EA }
+	RJMP _0x7F
+_0x80:
+; 0000 00F2 }
 	RJMP _0x2080002
 ; .FEND
 ;void displayMessage(char *message, int delay_ms_value)
-; 0000 00ED {
+; 0000 00F5 {
 _displayMessage:
 ; .FSTART _displayMessage
-; 0000 00EE lcd_clear();
+; 0000 00F6 lcd_clear();
 	RCALL SUBOPT_0x4
 ;	*message -> R18,R19
 ;	delay_ms_value -> R16,R17
 	RCALL _lcd_clear
-; 0000 00EF lcd_puts(message);
+; 0000 00F7 lcd_puts(message);
 	MOVW R26,R18
 	RCALL _lcd_puts
-; 0000 00F0 delay_ms(delay_ms_value);
+; 0000 00F8 delay_ms(delay_ms_value);
 	MOVW R26,R16
 	RCALL _delay_ms
-; 0000 00F1 }
+; 0000 00F9 }
 _0x2080004:
 	RCALL __LOADLOCR4
 	ADIW R28,6
 	RET
 ; .FEND
 ;int enterValueWithKeypad(char *buffer)
-; 0000 00F4 {
+; 0000 00FC {
 _enterValueWithKeypad:
 ; .FSTART _enterValueWithKeypad
-; 0000 00F5 buffer[0] = keypad() + '0';
+; 0000 00FD buffer[0] = keypad() + '0';
 	ST   -Y,R17
 	ST   -Y,R16
 	MOVW R16,R26
@@ -2215,44 +2229,65 @@ _enterValueWithKeypad:
 	SUBI R30,-LOW(48)
 	MOVW R26,R16
 	ST   X,R30
-; 0000 00F6 lcd_putchar(buffer[0]);
+; 0000 00FE lcd_putchar(buffer[0]);
 	LD   R26,X
 	RCALL _lcd_putchar
-; 0000 00F7 buffer[1] = keypad() + '0';
+; 0000 00FF buffer[1] = keypad() + '0';
 	RCALL _keypad
 	SUBI R30,-LOW(48)
 	__PUTB1RNS 16,1
-; 0000 00F8 lcd_putchar(buffer[1]);
+; 0000 0100 lcd_putchar(buffer[1]);
 	MOVW R30,R16
 	LDD  R26,Z+1
 	RCALL _lcd_putchar
-; 0000 00F9 buffer[2] = keypad() + '0';
+; 0000 0101 buffer[2] = keypad() + '0';
 	RCALL _keypad
 	SUBI R30,-LOW(48)
 	__PUTB1RNS 16,2
-; 0000 00FA lcd_putchar(buffer[2]);
+; 0000 0102 lcd_putchar(buffer[2]);
 	MOVW R30,R16
 	LDD  R26,Z+2
 	RCALL _lcd_putchar
-; 0000 00FB buffer[3] = '\0';  // Null-terminate the string
+; 0000 0103 buffer[3] = '\0';  // Null-terminate the string
 	MOVW R30,R16
 	ADIW R30,3
 	LDI  R26,LOW(0)
 	STD  Z+0,R26
-; 0000 00FC 
-; 0000 00FD delay_ms(1000);
+; 0000 0104 
+; 0000 0105 delay_ms(1000);
 	LDI  R26,LOW(1000)
 	LDI  R27,HIGH(1000)
 	RCALL _delay_ms
-; 0000 00FE 
-; 0000 00FF return 1;  // Return a non-zero value to indicate success
+; 0000 0106 
+; 0000 0107 return 1;  // Return a non-zero value to indicate success
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
 _0x2080003:
 	LD   R16,Y+
 	LD   R17,Y+
 	RET
-; 0000 0100 }
+; 0000 0108 }
+; .FEND
+;void generateTone()
+; 0000 010A {
+_generateTone:
+; .FSTART _generateTone
+; 0000 010B PORTD.7 = 1;  // Set PD7 HIGH
+	SBI  0x12,7
+; 0000 010C delay_ms(500);  // Adjust duration as needed
+	LDI  R26,LOW(500)
+	LDI  R27,HIGH(500)
+	RCALL _delay_ms
+; 0000 010D PORTD.7 = 0;  // Set PD7 LOW
+	CBI  0x12,7
+; 0000 010E delay_ms(500);  // Pause between tones
+	LDI  R26,LOW(500)
+	LDI  R27,HIGH(500)
+	RCALL _delay_ms
+; 0000 010F PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
+	SBI  0x12,7
+; 0000 0110 }
+	RET
 ; .FEND
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
