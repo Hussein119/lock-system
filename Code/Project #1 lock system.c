@@ -90,7 +90,7 @@ void main(void)
 						{
 						if (strcmp(currentUser.pc, enteredPC) == 0)
 							{
-							displayMessage("Welcome", 1000);
+							displayMessage("Welcome", 5000);
 							// Open the door 
                             DDRB .0 = 1;
 							}

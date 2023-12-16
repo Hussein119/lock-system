@@ -55,7 +55,7 @@ void main(void)
     
     // Set the speaker as a output 
     DDRD.7 = 1;
-    PORTD.7 = 1; // Set it to 0 initially
+    PORTD.7 = 1; // Set it to 1 initially
 
 	// Initialize user data in EEPROM
 	initializeUsers();
