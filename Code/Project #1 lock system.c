@@ -76,15 +76,9 @@ void main(void)
 
 				if (strcmp(currentUser.id, enteredID) == 0)
 					{
-					displayMessage("User Found", 1000);
 
 					address += sizeof(users[i].id);
 					EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
-
-					lcd_printf(",Stored PC: %s", currentUser.pc);
-					delay_ms(2000);
-
-					//char enteredPC[4];  // Change data type to string
 
 					displayMessage("Enter your PC: ", 1000);
 
@@ -93,7 +87,8 @@ void main(void)
 						if (strcmp(currentUser.pc, enteredPC) == 0)
 							{
 							displayMessage("Welcome", 1000);
-							// Open the door
+							// Open the door 
+                            DDRB .0 = 1;
 							}
 						else
 							displayMessage("Sorry wrong PC", 1000);

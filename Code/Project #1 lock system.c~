@@ -37,7 +37,7 @@ User users[] =
 	{"Ahmed", "126", "129"},
 	{"Amr", "128", "325"},
 	{"Adel", "130", "426"},
-	{"Omer", "132", "077"},
+	{"Omer", "132", "079"},
 };
 
 void main(void)
@@ -84,8 +84,6 @@ void main(void)
 					lcd_printf(",Stored PC: %s", currentUser.pc);
 					delay_ms(2000);
 
-					//char enteredPC[4];  // Change data type to string
-
 					displayMessage("Enter your PC: ", 1000);
 
 					if (enterValueWithKeypad(enteredPC))
@@ -93,7 +91,8 @@ void main(void)
 						if (strcmp(currentUser.pc, enteredPC) == 0)
 							{
 							displayMessage("Welcome", 1000);
-							// Open the door
+							// Open the door 
+                            DDRB .0 = 1;
 							}
 						else
 							displayMessage("Sorry wrong PC", 1000);
