@@ -76,7 +76,7 @@ void main(void)
 				{
                 displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
 				address += sizeof(users[i].id);    // Increment for ID
-				lcd_printf("%d", user[i].pc);
+				lcd_printf("%d", users[i].pc);
 				delay_ms(5000);
 				currentUser.pc = EE_Read(address); // store current user pc \
                 
@@ -232,17 +232,16 @@ void displayMessage(char *message, int delay_ms_value)
 }
 
 int enterValueWithKeypad()
-{
-	char digit1 = keypad();
-	char digit2 = keypad();
-	char digit3 = keypad();
-
-	lcd_putchar(digit1 + '0');
-
-	lcd_putchar(digit2 + '0');
-
-	lcd_putchar(digit3 + '0');
-
+{   char digit1;
+char digit2;
+char digit3;
+	 digit1 = keypad();
+     lcd_putchar(digit1 + '0');
+	 digit2 = keypad();
+     lcd_putchar(digit2 + '0');
+	 digit3 = keypad();
+     lcd_putchar(digit3 + '0');
+	
 	delay_ms(1000);
 
 	return (digit1 * 100) + (digit2 * 10) + digit3;

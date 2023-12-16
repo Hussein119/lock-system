@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Debug\List\Project #1 lock system.asm Sat Dec 16 13:59:59 2023
+AVRASM ver. 2.1.30  E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Debug\List\Project #1 lock system.asm Sat Dec 16 14:08:32 2023
 
 E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Debug\List\Project #1 lock system.asm(1417): warning: Register r5 already defined by the .DEF directive
 E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Debug\List\Project #1 lock system.asm(1418): warning: Register r4 already defined by the .DEF directive
@@ -2301,30 +2301,30 @@ E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Debug\List\Pr
                  ; 0000 00EB {
                  _enterValueWithKeypad:
                  ; .FSTART _enterValueWithKeypad
-                 ; 0000 00EC char digit1 = keypad();
-                 ; 0000 00ED char digit2 = keypad();
-                 ; 0000 00EE char digit3 = keypad();
-                 ; 0000 00EF 
-                 ; 0000 00F0 lcd_putchar(digit1 + '0');
+                 ; 0000 00EC char digit1;
+                 ; 0000 00ED char digit2;
+                 ; 0000 00EE char digit3;
+                 ; 0000 00EF digit1 = keypad();
 0001f2 d26e      	RCALL __SAVELOCR4
                  ;	digit1 -> R17
                  ;	digit2 -> R16
                  ;	digit3 -> R19
 0001f3 df55      	RCALL _keypad
 0001f4 2f1e      	MOV  R17,R30
-0001f5 df53      	RCALL _keypad
-0001f6 2f0e      	MOV  R16,R30
-0001f7 df51      	RCALL _keypad
-0001f8 2f3e      	MOV  R19,R30
-0001f9 2fa1      	MOV  R26,R17
-0001fa 5da0      	SUBI R26,-LOW(48)
-0001fb d055      	RCALL _lcd_putchar
-                 ; 0000 00F1 
+                 ; 0000 00F0 lcd_putchar(digit1 + '0');
+0001f5 2fa1      	MOV  R26,R17
+0001f6 5da0      	SUBI R26,-LOW(48)
+0001f7 d059      	RCALL _lcd_putchar
+                 ; 0000 00F1 digit2 = keypad();
+0001f8 df50      	RCALL _keypad
+0001f9 2f0e      	MOV  R16,R30
                  ; 0000 00F2 lcd_putchar(digit2 + '0');
-0001fc 2fa0      	MOV  R26,R16
-0001fd 5da0      	SUBI R26,-LOW(48)
-0001fe d052      	RCALL _lcd_putchar
-                 ; 0000 00F3 
+0001fa 2fa0      	MOV  R26,R16
+0001fb 5da0      	SUBI R26,-LOW(48)
+0001fc d054      	RCALL _lcd_putchar
+                 ; 0000 00F3 digit3 = keypad();
+0001fd df4b      	RCALL _keypad
+0001fe 2f3e      	MOV  R19,R30
                  ; 0000 00F4 lcd_putchar(digit3 + '0');
 0001ff 2fa3      	MOV  R26,R19
 000200 5da0      	SUBI R26,-LOW(48)

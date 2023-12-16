@@ -21,7 +21,7 @@ OutputLinkerFilesDirectory=Release\Link
 F1=Project #1 lock system.c
 ActiveTab=1
 OF1=Project #1 lock system.c
-TimeStamp1=1469079633
+TimeStamp1=1469083918
 non-commercial use only
 [CompilerDebug]
 Chip=ATmega16
@@ -129,8 +129,8 @@ DisplayCodeSizeError=0
 UseBootAppXmega=0
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1469083648
-Build=65
+COFFileTimeStamp=1469083921
+Build=67
 GlobalVarAddr=486
 EEPROMVarAddr=0
 [DefinedSymbolsDebug]
@@ -242,7 +242,7 @@ UseBootAppXmega=0
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=65
+Build=67
 IncludePath0=C:\cvavreval\inc
 IncludePath1=
 IncludePath2=
@@ -514,16 +514,16 @@ Row=0
 Column=0
 ScrollPosX=0
 ScrollPosY=0
-TimeStamp=1469079644
+TimeStamp=1469083925
 [BookmarksFoldedCode]
 Files=1
 F1=Project #1 lock system.c
 [Bookmarks1]
-TimeStamp=1469079633
-Row=79
-Column=34
+TimeStamp=1469083918
+Row=239
+Column=33
 ScrollPosX=0
-ScrollPosY=96
+ScrollPosY=232
 BK0=-1
 BK1=-1
 BK2=-1
@@ -551,7 +551,7 @@ L13=Enhanced function parameters passing: Mode 2
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 65
+L17=Build: 67
 L18=12180 line(s) compiled
 L19=No errors
 L20=No warnings
@@ -588,8 +588,6 @@ L10=[.dseg] 0x000060 0x0001e6      0    134    134    1024  13.1%
 L11=[.eseg] 0x000000 0x000000      0      0      0     512   0.0%
 L12=
 Lines=12
-[FoldedCode1]
-Blocks=0
 [HeadersList]
 Files=1
 F1=E:\Seventh term\Embedded Systems\Project #1\Simulation & Code\Code\Project #1 lock system.c
@@ -600,3 +598,5 @@ F2=C:\cvavreval\inc\mega16_bits.h
 F3=C:\cvavreval\inc\alcd.h
 F4=C:\cvavreval\inc\delay.h
 F5=C:\cvavreval\inc\string.h
+[FoldedCode1]
+Blocks=0

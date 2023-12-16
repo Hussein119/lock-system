@@ -2175,30 +2175,30 @@ _0x2080003:
 ; 0000 00EB {
 _enterValueWithKeypad:
 ; .FSTART _enterValueWithKeypad
-; 0000 00EC char digit1 = keypad();
-; 0000 00ED char digit2 = keypad();
-; 0000 00EE char digit3 = keypad();
-; 0000 00EF 
-; 0000 00F0 lcd_putchar(digit1 + '0');
+; 0000 00EC char digit1;
+; 0000 00ED char digit2;
+; 0000 00EE char digit3;
+; 0000 00EF digit1 = keypad();
 	RCALL __SAVELOCR4
 ;	digit1 -> R17
 ;	digit2 -> R16
 ;	digit3 -> R19
 	RCALL _keypad
 	MOV  R17,R30
-	RCALL _keypad
-	MOV  R16,R30
-	RCALL _keypad
-	MOV  R19,R30
+; 0000 00F0 lcd_putchar(digit1 + '0');
 	MOV  R26,R17
 	SUBI R26,-LOW(48)
 	RCALL _lcd_putchar
-; 0000 00F1 
+; 0000 00F1 digit2 = keypad();
+	RCALL _keypad
+	MOV  R16,R30
 ; 0000 00F2 lcd_putchar(digit2 + '0');
 	MOV  R26,R16
 	SUBI R26,-LOW(48)
 	RCALL _lcd_putchar
-; 0000 00F3 
+; 0000 00F3 digit3 = keypad();
+	RCALL _keypad
+	MOV  R19,R30
 ; 0000 00F4 lcd_putchar(digit3 + '0');
 	MOV  R26,R19
 	SUBI R26,-LOW(48)

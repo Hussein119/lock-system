@@ -686,30 +686,30 @@ _0xC:
 ; 0000 00EB {
 ;PCODE: $000001C4 VOL: 0
 ;PCODE: $000001C5 VOL: 0
-; 0000 00EC char digit1 = keypad();
-; 0000 00ED char digit2 = keypad();
-; 0000 00EE char digit3 = keypad();
-; 0000 00EF 
-; 0000 00F0 lcd_putchar(digit1 + '0');
+; 0000 00EC char digit1;
+; 0000 00ED char digit2;
+; 0000 00EE char digit3;
+; 0000 00EF digit1 = keypad();
 ;PCODE: $000001C6 VOL: 0
 ;	digit1 -> R17
 ;	digit2 -> R16
 ;	digit3 -> R19
 ;PCODE: $000001C7 VOL: 0
 ;PCODE: $000001C8 VOL: 0
+; 0000 00F0 lcd_putchar(digit1 + '0');
 ;PCODE: $000001C9 VOL: 0
 ;PCODE: $000001CA VOL: 0
 ;PCODE: $000001CB VOL: 0
+; 0000 00F1 digit2 = keypad();
 ;PCODE: $000001CC VOL: 0
 ;PCODE: $000001CD VOL: 0
+; 0000 00F2 lcd_putchar(digit2 + '0');
 ;PCODE: $000001CE VOL: 0
 ;PCODE: $000001CF VOL: 0
-; 0000 00F1 
-; 0000 00F2 lcd_putchar(digit2 + '0');
 ;PCODE: $000001D0 VOL: 0
+; 0000 00F3 digit3 = keypad();
 ;PCODE: $000001D1 VOL: 0
 ;PCODE: $000001D2 VOL: 0
-; 0000 00F3 
 ; 0000 00F4 lcd_putchar(digit3 + '0');
 ;PCODE: $000001D3 VOL: 0
 ;PCODE: $000001D4 VOL: 0

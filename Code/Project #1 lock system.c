@@ -74,13 +74,13 @@ void main(void)
 			currentUser.id = EE_Read(address);
 			if (currentUser.id == enteredID)
 				{
-                displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
+				displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
 				address += sizeof(users[i].id);    // Increment for ID
 				lcd_printf("%d", users[i].pc);
 				delay_ms(5000);
 				currentUser.pc = EE_Read(address); // store current user pc \
-                
-                userFound = 1; // set the flag = 1 if we found it
+
+				userFound = 1; // set the flag = 1 if we found it
 				break;
 				}
 			address += sizeof(users[i].id);    // Increment for ID
@@ -233,14 +233,14 @@ void displayMessage(char *message, int delay_ms_value)
 
 int enterValueWithKeypad()
 {
-	char digit1 = keypad();
-	char digit2 = keypad();
-	char digit3 = keypad();
-
+	char digit1;
+	char digit2;
+	char digit3;
+	digit1 = keypad();
 	lcd_putchar(digit1 + '0');
-
+	digit2 = keypad();
 	lcd_putchar(digit2 + '0');
-
+	digit3 = keypad();
 	lcd_putchar(digit3 + '0');
 
 	delay_ms(1000);
