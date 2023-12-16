@@ -18,25 +18,26 @@ char keypad();
 unsigned char EE_Read(unsigned int address);
 void EE_Write(unsigned int address, unsigned char data);
 void EE_WriteString(unsigned int address, const char *str);
+void EE_ReadString(unsigned int address, char *buffer, unsigned int length);
 void initializeUsers();
 void displayMessage(char *message, int delay_ms_value);
-int enterValueWithKeypad();
+int enterValueWithKeypad(char *buffer);
 
 // User structure to store user data
 typedef struct
 {
 	const char *name;
-	unsigned int id;
-	unsigned int pc;
+	char id[4];  // Change data type to string
+	char pc[4];  // Change data type to string
 } User;
 User users[] =
 {
 	// name  ID   PC
-	{"Prof", 111, 203},
-	{"Ahmed", 126, 129},
-	{"Amr", 128, 325},
-	{"Adel", 130, 426},
-	{"Omer", 132, 077},
+	{"Prof", "111", "203"},
+	{"Ahmed", "126", "129"},
+	{"Amr", "128", "325"},
+	{"Adel", "130", "426"},
+	{"Omer", "132", "079"},
 };
 
 void main(void)
@@ -57,53 +58,57 @@ void main(void)
 
 	while (1)
 		{
-		int enteredID;
+		char enteredID[4];  // Change data type to string
 		User currentUser;
-		// Search for the entered ID in EEPROM
 		unsigned int address = 0;
 		int userFound = 0;
 		int i;
 
 		displayMessage("Enter your ID: ", 1000);
 
-		enteredID = enterValueWithKeypad();
-
-		for (i = 0; i < sizeof(users); ++i)
+		if (enterValueWithKeypad(enteredID))
 			{
-			address += sizeof(users[i].name);  // Increment for name
-			currentUser.id = EE_Read(address);
-			if (currentUser.id == enteredID)
+			char enteredPC[4];
+			for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 				{
-				displayMessage("User Found", 5000);  // NOT PRINTED !!!!!!!!!! why ????
-				address += sizeof(users[i].id);    // Increment for ID
-				lcd_printf("%d", users[i].pc);
-				delay_ms(5000);
-				currentUser.pc = EE_Read(address); // store current user pc \
+				address += sizeof(users[i].name);
+				EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
 
-				userFound = 1; // set the flag = 1 if we found it
-				break;
+				if (strcmp(currentUser.id, enteredID) == 0)
+					{
+					displayMessage("User Found", 1000);
+
+					address += sizeof(users[i].id);
+					EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
+
+					lcd_printf(",Stored PC: %s", currentUser.pc);
+					delay_ms(2000);
+
+					//char enteredPC[4];  // Change data type to string
+
+					displayMessage("Enter your PC: ", 1000);
+
+					if (enterValueWithKeypad(enteredPC))
+						{
+						if (strcmp(currentUser.pc, enteredPC) == 0)
+							{
+							displayMessage("Welcome", 1000);
+							// Open the door
+							}
+						else
+							displayMessage("Sorry wrong PC", 1000);
+						}
+
+					userFound = 1;
+					break;
+					}
+
+				address += sizeof(users[i].id);
+				address += sizeof(users[i].pc);
 				}
-			address += sizeof(users[i].id);    // Increment for ID
-			address += sizeof(users[i].pc);    // Increment for PC
 			}
 
-		if (userFound)
-			{
-			int enteredPC;
-
-			displayMessage("Enter your PC: ", 1000);
-
-			enteredPC = enterValueWithKeypad();
-
-			if (currentUser.pc == enteredPC)
-				{
-				displayMessage("Welcome", 1000);
-				// Open the door
-				}
-			else
-				displayMessage("Sorry wrong PC", 1000);
-			}
-		else
+		if (!userFound)
 			{
 			displayMessage("Wrong ID", 1000);
 			// Two peeps alarm
@@ -205,24 +210,33 @@ void EE_WriteString(unsigned int address, const char *str)
 	EE_Write(address, '\0');
 }
 
-// Function to initialize user data in EEPROM
+void EE_ReadString(unsigned int address, char *buffer, unsigned int length)
+{
+	unsigned int i;
+	for (i = 0; i < length; ++i)
+		{
+		buffer[i] = EE_Read(address + i);
+		if (buffer[i] == '\0')
+			break;
+		}
+}
+
 void initializeUsers()
 {
 	unsigned int address = 0;
 	int i;
-	for (i = 0; i < sizeof(users); ++i)
+	for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 		{
 		EE_WriteString(address, users[i].name);
-		address += sizeof(users[i].name);  // Increment for name
+		address += sizeof(users[i].name);
 
-		EE_Write(address, users[i].id);
-		address += sizeof(users[i].id);    // Increment for ID
+		EE_WriteString(address, users[i].id);
+		address += sizeof(users[i].id);
 
-		EE_Write(address, users[i].pc);
-		address += sizeof(users[i].pc);    // Increment for PC
+		EE_WriteString(address, users[i].pc);
+		address += sizeof(users[i].pc);
 		}
 }
-
 
 void displayMessage(char *message, int delay_ms_value)
 {
@@ -231,31 +245,17 @@ void displayMessage(char *message, int delay_ms_value)
 	delay_ms(delay_ms_value);
 }
 
-int enterValueWithKeypad()
+int enterValueWithKeypad(char *buffer)
 {
-	char digit1;
-	char digit2;
-	char digit3;
-	digit1 = keypad();
-	lcd_putchar(digit1 + '0');
-	digit2 = keypad();
-	lcd_putchar(digit2 + '0');
-	digit3 = keypad();
-	lcd_putchar(digit3 + '0');
+    buffer[0] = keypad() + '0';
+    lcd_putchar(buffer[0]);
+    buffer[1] = keypad() + '0';
+    lcd_putchar(buffer[1]);
+    buffer[2] = keypad() + '0';
+    lcd_putchar(buffer[2]);
+    buffer[3] = '\0';  // Null-terminate the string
 
-	delay_ms(1000);
+    delay_ms(1000);
 
-	return (digit1 * 100) + (digit2 * 10) + digit3;
+    return 1;  // Return a non-zero value to indicate success
 }
-
-/*
-interrupt [1] void Reset (void) {
-    // action on interrupt
-}
-interrupt [2] void ext0 (void) {
-    // action on interrupt
-}
-interrupt [3] void ext1 (void) {
-    // action on interrupt
-}
-*/
