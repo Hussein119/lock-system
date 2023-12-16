@@ -1,4 +1,4 @@
-# Lock System using Proteus 8 Professional and CodeVisionAVR
+# Lock System
 
 This collaborative project implements a secure lock system using Proteus 8 Professional for simulation and CodeVisionAVR Evaluation for programming the ATmega16 microcontroller. The system, written in the C programming language, includes three main functionalities: opening the door, setting a new passcode (PC), and accessing administrative features. The project is divided into three parts, each skillfully handled by different contributors.
 
