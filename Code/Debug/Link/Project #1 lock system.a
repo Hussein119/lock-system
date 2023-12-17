@@ -769,21 +769,16 @@ _0x29:
 ;PCODE: $000001C4 VOL: 0
 ;PCODE: $000001C5 VOL: 0
 ;PCODE: $000001C6 VOL: 0
-; 0000 012A lcd_gotoxy(0, 1);
+; 0000 012A 
+; 0000 012B if (enterValueWithKeypad(enteredStudentID))
 ;PCODE: $000001C7 VOL: 0
 ;PCODE: $000001C8 VOL: 0
 ;PCODE: $000001C9 VOL: 0
 ;PCODE: $000001CA VOL: 0
-; 0000 012B 
-; 0000 012C if (enterValueWithKeypad(enteredStudentID))
+; 0000 012C {
+; 0000 012D int j;
+; 0000 012E for (j = 0; j < sizeof(users) / sizeof(users[0]); ++j)
 ;PCODE: $000001CB VOL: 0
-;PCODE: $000001CC VOL: 0
-;PCODE: $000001CD VOL: 0
-;PCODE: $000001CE VOL: 0
-; 0000 012D {
-; 0000 012E int j;
-; 0000 012F for (j = 0; j < sizeof(users) / sizeof(users[0]); ++j)
-;PCODE: $000001CF VOL: 0
 ;	enteredPC -> Y+46
 ;	enteredStudentID -> Y+42
 ;	enteredNewPC -> Y+38
@@ -791,514 +786,519 @@ _0x29:
 ;	admin -> Y+10
 ;	i -> Y+8
 ;	j -> Y+0
+;PCODE: $000001CC VOL: 0
+;PCODE: $000001CD VOL: 0
+;PCODE: $000001CE VOL: 0
+;PCODE: $000001CF VOL: 0
 ;PCODE: $000001D0 VOL: 0
 ;PCODE: $000001D1 VOL: 0
 ;PCODE: $000001D2 VOL: 0
 ;PCODE: $000001D3 VOL: 0
 ;PCODE: $000001D4 VOL: 0
 ;PCODE: $000001D5 VOL: 0
+; 0000 012F {
+; 0000 0130 address += sizeof(users[j].name);
 ;PCODE: $000001D6 VOL: 0
 ;PCODE: $000001D7 VOL: 0
+; 0000 0131 EE_ReadString(address, student.id, sizeof(student.id));
 ;PCODE: $000001D8 VOL: 0
 ;PCODE: $000001D9 VOL: 0
-; 0000 0130 {
-; 0000 0131 address += sizeof(users[j].name);
 ;PCODE: $000001DA VOL: 0
 ;PCODE: $000001DB VOL: 0
-; 0000 0132 EE_ReadString(address, student.id, sizeof(student.id));
 ;PCODE: $000001DC VOL: 0
 ;PCODE: $000001DD VOL: 0
+; 0000 0132 address += sizeof(users[j].id);
 ;PCODE: $000001DE VOL: 0
 ;PCODE: $000001DF VOL: 0
+; 0000 0133 if (strcmp(student.id, enteredStudentID) == 0)
 ;PCODE: $000001E0 VOL: 0
 ;PCODE: $000001E1 VOL: 0
-; 0000 0133 address += sizeof(users[j].id);
 ;PCODE: $000001E2 VOL: 0
 ;PCODE: $000001E3 VOL: 0
-; 0000 0134 if (strcmp(student.id, enteredStudentID) == 0)
 ;PCODE: $000001E4 VOL: 0
 ;PCODE: $000001E5 VOL: 0
+; 0000 0134 {
+; 0000 0135 displayMessage("Enter student's new PC: ", 1000);
 ;PCODE: $000001E6 VOL: 0
 ;PCODE: $000001E7 VOL: 0
 ;PCODE: $000001E8 VOL: 0
 ;PCODE: $000001E9 VOL: 0
-; 0000 0135 {
-; 0000 0136 displayMessage("Enter student's new PC: ", 1000);
 ;PCODE: $000001EA VOL: 0
+; 0000 0136 if (enterValueWithKeypad(enteredNewPC))
 ;PCODE: $000001EB VOL: 0
 ;PCODE: $000001EC VOL: 0
 ;PCODE: $000001ED VOL: 0
 ;PCODE: $000001EE VOL: 0
-; 0000 0137 lcd_gotoxy(0, 1);
+; 0000 0137 {
+; 0000 0138 // Set the new pc for this student, address is for student PC
+; 0000 0139 EE_WriteString(address, enteredNewPC);
 ;PCODE: $000001EF VOL: 0
 ;PCODE: $000001F0 VOL: 0
 ;PCODE: $000001F1 VOL: 0
+; 0000 013A displayMessage("Student PC is stored", 3000);
 ;PCODE: $000001F2 VOL: 0
-; 0000 0138 if (enterValueWithKeypad(enteredNewPC))
 ;PCODE: $000001F3 VOL: 0
 ;PCODE: $000001F4 VOL: 0
 ;PCODE: $000001F5 VOL: 0
 ;PCODE: $000001F6 VOL: 0
-; 0000 0139 {
-; 0000 013A // Set the new pc for this student, address is for student PC
-; 0000 013B EE_WriteString(address, enteredNewPC);
+; 0000 013B userFound = 1;
 ;PCODE: $000001F7 VOL: 0
 ;PCODE: $000001F8 VOL: 0
+; 0000 013C break;
 ;PCODE: $000001F9 VOL: 0
-; 0000 013C displayMessage("Student PC is stored", 3000);
+; 0000 013D }
+; 0000 013E }
 ;PCODE: $000001FA VOL: 0
+; 0000 013F else if (strcmp(admin.id, enteredStudentID) == 0)
 ;PCODE: $000001FB VOL: 0
 ;PCODE: $000001FC VOL: 0
 ;PCODE: $000001FD VOL: 0
 ;PCODE: $000001FE VOL: 0
-; 0000 013D userFound = 1;
 ;PCODE: $000001FF VOL: 0
 ;PCODE: $00000200 VOL: 0
-; 0000 013E break;
 ;PCODE: $00000201 VOL: 0
-; 0000 013F }
-; 0000 0140 }
 ;PCODE: $00000202 VOL: 0
-; 0000 0141 else if (strcmp(admin.id, enteredStudentID) == 0)
+; 0000 0140 {
+; 0000 0141 displayMessage("Enter your new PC: ", 1000);
 ;PCODE: $00000203 VOL: 0
 ;PCODE: $00000204 VOL: 0
 ;PCODE: $00000205 VOL: 0
 ;PCODE: $00000206 VOL: 0
 ;PCODE: $00000207 VOL: 0
+; 0000 0142 lcd_gotoxy(0, 1);
 ;PCODE: $00000208 VOL: 0
 ;PCODE: $00000209 VOL: 0
 ;PCODE: $0000020A VOL: 0
-; 0000 0142 {
-; 0000 0143 displayMessage("Enter your new PC: ", 1000);
 ;PCODE: $0000020B VOL: 0
+; 0000 0143 if (enterValueWithKeypad(enteredNewPC))
 ;PCODE: $0000020C VOL: 0
 ;PCODE: $0000020D VOL: 0
 ;PCODE: $0000020E VOL: 0
 ;PCODE: $0000020F VOL: 0
-; 0000 0144 lcd_gotoxy(0, 1);
+; 0000 0144 {
+; 0000 0145 // Set the new pc for this user (Admin),  address is for admin PC
+; 0000 0146 EE_WriteString(adminPCAddress, enteredNewPC);
 ;PCODE: $00000210 VOL: 0
 ;PCODE: $00000211 VOL: 0
 ;PCODE: $00000212 VOL: 0
+; 0000 0147 displayMessage("Your PC is stored", 3000);
 ;PCODE: $00000213 VOL: 0
-; 0000 0145 if (enterValueWithKeypad(enteredNewPC))
 ;PCODE: $00000214 VOL: 0
 ;PCODE: $00000215 VOL: 0
 ;PCODE: $00000216 VOL: 0
 ;PCODE: $00000217 VOL: 0
-; 0000 0146 {
-; 0000 0147 // Set the new pc for this user (Admin),  address is for admin PC
-; 0000 0148 EE_WriteString(adminPCAddress, enteredNewPC);
+; 0000 0148 userFound = 1;
 ;PCODE: $00000218 VOL: 0
 ;PCODE: $00000219 VOL: 0
+; 0000 0149 break;
 ;PCODE: $0000021A VOL: 0
-; 0000 0149 displayMessage("Your PC is stored", 3000);
+; 0000 014A }
+; 0000 014B }
 ;PCODE: $0000021B VOL: 0
+; 0000 014C address += sizeof(users[i].pc);
 ;PCODE: $0000021C VOL: 0
 ;PCODE: $0000021D VOL: 0
 ;PCODE: $0000021E VOL: 0
 ;PCODE: $0000021F VOL: 0
-; 0000 014A userFound = 1;
+; 0000 014D }
 ;PCODE: $00000220 VOL: 0
 ;PCODE: $00000221 VOL: 0
-; 0000 014B break;
 ;PCODE: $00000222 VOL: 0
-; 0000 014C }
-; 0000 014D }
 ;PCODE: $00000223 VOL: 0
-; 0000 014E address += sizeof(users[i].pc);
 ;PCODE: $00000224 VOL: 0
 ;PCODE: $00000225 VOL: 0
+; 0000 014E }
 ;PCODE: $00000226 VOL: 0
-;PCODE: $00000227 VOL: 0
 ; 0000 014F }
+;PCODE: $00000227 VOL: 0
+; 0000 0150 }
 ;PCODE: $00000228 VOL: 0
+; 0000 0151 
+; 0000 0152 if (!userFound)
 ;PCODE: $00000229 VOL: 0
 ;PCODE: $0000022A VOL: 0
 ;PCODE: $0000022B VOL: 0
+; 0000 0153 {
+; 0000 0154 displayMessage("Contact Admin", 3000);
 ;PCODE: $0000022C VOL: 0
 ;PCODE: $0000022D VOL: 0
-; 0000 0150 }
 ;PCODE: $0000022E VOL: 0
-; 0000 0151 }
 ;PCODE: $0000022F VOL: 0
-; 0000 0152 }
 ;PCODE: $00000230 VOL: 0
-; 0000 0153 
-; 0000 0154 if (!userFound)
+; 0000 0155 // Two peeps alarm
+; 0000 0156 generateTone();
 ;PCODE: $00000231 VOL: 0
+; 0000 0157 generateTone();
 ;PCODE: $00000232 VOL: 0
+; 0000 0158 }
+; 0000 0159 delay_ms(5000);
 ;PCODE: $00000233 VOL: 0
-; 0000 0155 {
-; 0000 0156 displayMessage("Contact Admin", 3000);
 ;PCODE: $00000234 VOL: 0
 ;PCODE: $00000235 VOL: 0
+; 0000 015A lcd_clear();
 ;PCODE: $00000236 VOL: 0
+; 0000 015B }
 ;PCODE: $00000237 VOL: 0
 ;PCODE: $00000238 VOL: 0
-; 0000 0157 // Two peeps alarm
-; 0000 0158 generateTone();
 ;PCODE: $00000239 VOL: 0
-; 0000 0159 generateTone();
 ;PCODE: $0000023A VOL: 0
-; 0000 015A }
-; 0000 015B delay_ms(5000);
 ;PCODE: $0000023B VOL: 0
-;PCODE: $0000023C VOL: 0
-;PCODE: $0000023D VOL: 0
-; 0000 015C lcd_clear();
-;PCODE: $0000023E VOL: 0
-; 0000 015D }
-;PCODE: $0000023F VOL: 0
-;PCODE: $00000240 VOL: 0
-;PCODE: $00000241 VOL: 0
-;PCODE: $00000242 VOL: 0
-;PCODE: $00000243 VOL: 0
 
 	.DSEG
 _0x3B:
 	.BYTE 0x8B
 ;char keypad()
-; 0000 0160 {
+; 0000 015E {
 
 	.CSEG
+;PCODE: $0000023C VOL: 0
+;PCODE: $0000023D VOL: 0
+; 0000 015F while (1)
+;PCODE: $0000023E VOL: 0
+; 0000 0160 {
+; 0000 0161 PORTC .0 = 0;
+;PCODE: $0000023F VOL: 0
+;PCODE: $00000240 VOL: 0
+; 0000 0162 PORTC .1 = 1;
+;PCODE: $00000241 VOL: 0
+;PCODE: $00000242 VOL: 0
+; 0000 0163 PORTC .2 = 1;
+;PCODE: $00000243 VOL: 0
 ;PCODE: $00000244 VOL: 0
+; 0000 0164 
+; 0000 0165 
+; 0000 0166 switch (PINC)
 ;PCODE: $00000245 VOL: 0
-; 0000 0161 while (1)
+; 0000 0167 {
+; 0000 0168 case 0b11110110:
 ;PCODE: $00000246 VOL: 0
-; 0000 0162 {
-; 0000 0163 PORTC .0 = 0;
 ;PCODE: $00000247 VOL: 0
+; 0000 0169 while (PINC .3 == 0);
 ;PCODE: $00000248 VOL: 0
-; 0000 0164 PORTC .1 = 1;
 ;PCODE: $00000249 VOL: 0
 ;PCODE: $0000024A VOL: 0
-; 0000 0165 PORTC .2 = 1;
 ;PCODE: $0000024B VOL: 0
 ;PCODE: $0000024C VOL: 0
-; 0000 0166 
-; 0000 0167 
-; 0000 0168 switch (PINC)
 ;PCODE: $0000024D VOL: 0
-; 0000 0169 {
-; 0000 016A case 0b11110110:
+; 0000 016A return 1;
 ;PCODE: $0000024E VOL: 0
 ;PCODE: $0000024F VOL: 0
-; 0000 016B while (PINC .3 == 0);
+; 0000 016B case 0b11101110:
 ;PCODE: $00000250 VOL: 0
 ;PCODE: $00000251 VOL: 0
 ;PCODE: $00000252 VOL: 0
+; 0000 016C while (PINC .4 == 0);
 ;PCODE: $00000253 VOL: 0
 ;PCODE: $00000254 VOL: 0
 ;PCODE: $00000255 VOL: 0
-; 0000 016C return 1;
 ;PCODE: $00000256 VOL: 0
 ;PCODE: $00000257 VOL: 0
-; 0000 016D case 0b11101110:
 ;PCODE: $00000258 VOL: 0
+; 0000 016D return 4;
 ;PCODE: $00000259 VOL: 0
 ;PCODE: $0000025A VOL: 0
-; 0000 016E while (PINC .4 == 0);
+; 0000 016E case 0b11011110:
 ;PCODE: $0000025B VOL: 0
 ;PCODE: $0000025C VOL: 0
 ;PCODE: $0000025D VOL: 0
+; 0000 016F while (PINC .5 == 0);
 ;PCODE: $0000025E VOL: 0
 ;PCODE: $0000025F VOL: 0
 ;PCODE: $00000260 VOL: 0
-; 0000 016F return 4;
 ;PCODE: $00000261 VOL: 0
 ;PCODE: $00000262 VOL: 0
-; 0000 0170 case 0b11011110:
 ;PCODE: $00000263 VOL: 0
+; 0000 0170 return 7;
 ;PCODE: $00000264 VOL: 0
 ;PCODE: $00000265 VOL: 0
-; 0000 0171 while (PINC .5 == 0);
+; 0000 0171 case 0b10111110:
 ;PCODE: $00000266 VOL: 0
 ;PCODE: $00000267 VOL: 0
 ;PCODE: $00000268 VOL: 0
+; 0000 0172 while (PINC .6 == 0);
 ;PCODE: $00000269 VOL: 0
 ;PCODE: $0000026A VOL: 0
 ;PCODE: $0000026B VOL: 0
-; 0000 0172 return 7;
 ;PCODE: $0000026C VOL: 0
 ;PCODE: $0000026D VOL: 0
-; 0000 0173 case 0b10111110:
 ;PCODE: $0000026E VOL: 0
+; 0000 0173 return '*';
 ;PCODE: $0000026F VOL: 0
 ;PCODE: $00000270 VOL: 0
-; 0000 0174 while (PINC .6 == 0);
+; 0000 0174 }
 ;PCODE: $00000271 VOL: 0
+; 0000 0175 
+; 0000 0176 PORTC .0 = 1;
 ;PCODE: $00000272 VOL: 0
 ;PCODE: $00000273 VOL: 0
+; 0000 0177 PORTC .1 = 0;
 ;PCODE: $00000274 VOL: 0
 ;PCODE: $00000275 VOL: 0
+; 0000 0178 PORTC .2 = 1;
 ;PCODE: $00000276 VOL: 0
-; 0000 0175 return '*';
 ;PCODE: $00000277 VOL: 0
+; 0000 0179 
+; 0000 017A switch (PINC)
 ;PCODE: $00000278 VOL: 0
-; 0000 0176 }
+; 0000 017B {
+; 0000 017C case 0b11110101:
 ;PCODE: $00000279 VOL: 0
-; 0000 0177 
-; 0000 0178 PORTC .0 = 1;
 ;PCODE: $0000027A VOL: 0
+; 0000 017D while (PINC .3 == 0);
 ;PCODE: $0000027B VOL: 0
-; 0000 0179 PORTC .1 = 0;
 ;PCODE: $0000027C VOL: 0
 ;PCODE: $0000027D VOL: 0
-; 0000 017A PORTC .2 = 1;
 ;PCODE: $0000027E VOL: 0
 ;PCODE: $0000027F VOL: 0
-; 0000 017B 
-; 0000 017C switch (PINC)
 ;PCODE: $00000280 VOL: 0
-; 0000 017D {
-; 0000 017E case 0b11110101:
+; 0000 017E return 2;
 ;PCODE: $00000281 VOL: 0
 ;PCODE: $00000282 VOL: 0
-; 0000 017F while (PINC .3 == 0);
+; 0000 017F case 0b11101101:
 ;PCODE: $00000283 VOL: 0
 ;PCODE: $00000284 VOL: 0
 ;PCODE: $00000285 VOL: 0
+; 0000 0180 while (PINC .4 == 0);
 ;PCODE: $00000286 VOL: 0
 ;PCODE: $00000287 VOL: 0
 ;PCODE: $00000288 VOL: 0
-; 0000 0180 return 2;
 ;PCODE: $00000289 VOL: 0
 ;PCODE: $0000028A VOL: 0
-; 0000 0181 case 0b11101101:
 ;PCODE: $0000028B VOL: 0
+; 0000 0181 return 5;
 ;PCODE: $0000028C VOL: 0
 ;PCODE: $0000028D VOL: 0
-; 0000 0182 while (PINC .4 == 0);
+; 0000 0182 case 0b11011101:
 ;PCODE: $0000028E VOL: 0
 ;PCODE: $0000028F VOL: 0
 ;PCODE: $00000290 VOL: 0
+; 0000 0183 while (PINC .5 == 0);
 ;PCODE: $00000291 VOL: 0
 ;PCODE: $00000292 VOL: 0
 ;PCODE: $00000293 VOL: 0
-; 0000 0183 return 5;
 ;PCODE: $00000294 VOL: 0
 ;PCODE: $00000295 VOL: 0
-; 0000 0184 case 0b11011101:
 ;PCODE: $00000296 VOL: 0
+; 0000 0184 return 8;
 ;PCODE: $00000297 VOL: 0
 ;PCODE: $00000298 VOL: 0
-; 0000 0185 while (PINC .5 == 0);
+; 0000 0185 case 0b10111101:
 ;PCODE: $00000299 VOL: 0
 ;PCODE: $0000029A VOL: 0
 ;PCODE: $0000029B VOL: 0
+; 0000 0186 while (PINC .6 == 0);
 ;PCODE: $0000029C VOL: 0
 ;PCODE: $0000029D VOL: 0
 ;PCODE: $0000029E VOL: 0
-; 0000 0186 return 8;
 ;PCODE: $0000029F VOL: 0
 ;PCODE: $000002A0 VOL: 0
-; 0000 0187 case 0b10111101:
 ;PCODE: $000002A1 VOL: 0
+; 0000 0187 return 0;
 ;PCODE: $000002A2 VOL: 0
 ;PCODE: $000002A3 VOL: 0
-; 0000 0188 while (PINC .6 == 0);
+; 0000 0188 }
 ;PCODE: $000002A4 VOL: 0
+; 0000 0189 
+; 0000 018A PORTC .0 = 1;
 ;PCODE: $000002A5 VOL: 0
 ;PCODE: $000002A6 VOL: 0
+; 0000 018B PORTC .1 = 1;
 ;PCODE: $000002A7 VOL: 0
 ;PCODE: $000002A8 VOL: 0
+; 0000 018C PORTC .2 = 0;
 ;PCODE: $000002A9 VOL: 0
-; 0000 0189 return 0;
 ;PCODE: $000002AA VOL: 0
+; 0000 018D 
+; 0000 018E switch (PINC)
 ;PCODE: $000002AB VOL: 0
-; 0000 018A }
+; 0000 018F {
+; 0000 0190 case 0b11110011:
 ;PCODE: $000002AC VOL: 0
-; 0000 018B 
-; 0000 018C PORTC .0 = 1;
 ;PCODE: $000002AD VOL: 0
+; 0000 0191 while (PINC .3 == 0);
 ;PCODE: $000002AE VOL: 0
-; 0000 018D PORTC .1 = 1;
 ;PCODE: $000002AF VOL: 0
 ;PCODE: $000002B0 VOL: 0
-; 0000 018E PORTC .2 = 0;
 ;PCODE: $000002B1 VOL: 0
 ;PCODE: $000002B2 VOL: 0
-; 0000 018F 
-; 0000 0190 switch (PINC)
 ;PCODE: $000002B3 VOL: 0
-; 0000 0191 {
-; 0000 0192 case 0b11110011:
+; 0000 0192 return 3;
 ;PCODE: $000002B4 VOL: 0
 ;PCODE: $000002B5 VOL: 0
-; 0000 0193 while (PINC .3 == 0);
+; 0000 0193 case 0b11101011:
 ;PCODE: $000002B6 VOL: 0
 ;PCODE: $000002B7 VOL: 0
 ;PCODE: $000002B8 VOL: 0
+; 0000 0194 while (PINC .4 == 0);
 ;PCODE: $000002B9 VOL: 0
 ;PCODE: $000002BA VOL: 0
 ;PCODE: $000002BB VOL: 0
-; 0000 0194 return 3;
 ;PCODE: $000002BC VOL: 0
 ;PCODE: $000002BD VOL: 0
-; 0000 0195 case 0b11101011:
 ;PCODE: $000002BE VOL: 0
+; 0000 0195 return 6;
 ;PCODE: $000002BF VOL: 0
 ;PCODE: $000002C0 VOL: 0
-; 0000 0196 while (PINC .4 == 0);
+; 0000 0196 case 0b11011011:
 ;PCODE: $000002C1 VOL: 0
 ;PCODE: $000002C2 VOL: 0
 ;PCODE: $000002C3 VOL: 0
+; 0000 0197 while (PINC .5 == 0);
 ;PCODE: $000002C4 VOL: 0
 ;PCODE: $000002C5 VOL: 0
 ;PCODE: $000002C6 VOL: 0
-; 0000 0197 return 6;
 ;PCODE: $000002C7 VOL: 0
 ;PCODE: $000002C8 VOL: 0
-; 0000 0198 case 0b11011011:
 ;PCODE: $000002C9 VOL: 0
+; 0000 0198 return 9;
 ;PCODE: $000002CA VOL: 0
 ;PCODE: $000002CB VOL: 0
-; 0000 0199 while (PINC .5 == 0);
+; 0000 0199 case 0b10111011:
 ;PCODE: $000002CC VOL: 0
 ;PCODE: $000002CD VOL: 0
 ;PCODE: $000002CE VOL: 0
+; 0000 019A while (PINC .6 == 0);
 ;PCODE: $000002CF VOL: 0
 ;PCODE: $000002D0 VOL: 0
 ;PCODE: $000002D1 VOL: 0
-; 0000 019A return 9;
 ;PCODE: $000002D2 VOL: 0
 ;PCODE: $000002D3 VOL: 0
-; 0000 019B case 0b10111011:
 ;PCODE: $000002D4 VOL: 0
+; 0000 019B return 11;
 ;PCODE: $000002D5 VOL: 0
 ;PCODE: $000002D6 VOL: 0
-; 0000 019C while (PINC .6 == 0);
+; 0000 019C }
 ;PCODE: $000002D7 VOL: 0
+; 0000 019D }
 ;PCODE: $000002D8 VOL: 0
 ;PCODE: $000002D9 VOL: 0
+; 0000 019E }
 ;PCODE: $000002DA VOL: 0
 ;PCODE: $000002DB VOL: 0
+;unsigned char EE_Read(unsigned int address)
+; 0000 01A1 {
 ;PCODE: $000002DC VOL: 0
-; 0000 019D return 11;
 ;PCODE: $000002DD VOL: 0
+; 0000 01A2 while (EECR .1 == 1); // Wait till EEPROM is ready
 ;PCODE: $000002DE VOL: 0
-; 0000 019E }
 ;PCODE: $000002DF VOL: 0
-; 0000 019F }
 ;PCODE: $000002E0 VOL: 0
+;	address -> R16,R17
 ;PCODE: $000002E1 VOL: 0
-; 0000 01A0 }
 ;PCODE: $000002E2 VOL: 0
 ;PCODE: $000002E3 VOL: 0
-;unsigned char EE_Read(unsigned int address)
-; 0000 01A3 {
 ;PCODE: $000002E4 VOL: 0
 ;PCODE: $000002E5 VOL: 0
-; 0000 01A4 while (EECR .1 == 1); // Wait till EEPROM is ready
 ;PCODE: $000002E6 VOL: 0
+; 0000 01A3 EEAR = address;       // Prepare the address you want to read from
 ;PCODE: $000002E7 VOL: 0
 ;PCODE: $000002E8 VOL: 0
-;	address -> R16,R17
+; 0000 01A4 EECR .0 = 1;          // Execute read command
 ;PCODE: $000002E9 VOL: 0
 ;PCODE: $000002EA VOL: 0
+; 0000 01A5 return EEDR;
 ;PCODE: $000002EB VOL: 0
 ;PCODE: $000002EC VOL: 0
 ;PCODE: $000002ED VOL: 0
+; 0000 01A6 }
 ;PCODE: $000002EE VOL: 0
-; 0000 01A5 EEAR = address;       // Prepare the address you want to read from
+;void EE_Write(unsigned int address, unsigned char data)
+; 0000 01A9 {
 ;PCODE: $000002EF VOL: 0
 ;PCODE: $000002F0 VOL: 0
-; 0000 01A6 EECR .0 = 1;          // Execute read command
+; 0000 01AA while (EECR .1 == 1); // Wait till EEPROM is ready
 ;PCODE: $000002F1 VOL: 0
 ;PCODE: $000002F2 VOL: 0
-; 0000 01A7 return EEDR;
 ;PCODE: $000002F3 VOL: 0
 ;PCODE: $000002F4 VOL: 0
-;PCODE: $000002F5 VOL: 0
-; 0000 01A8 }
-;PCODE: $000002F6 VOL: 0
-;void EE_Write(unsigned int address, unsigned char data)
-; 0000 01AB {
-;PCODE: $000002F7 VOL: 0
-;PCODE: $000002F8 VOL: 0
-; 0000 01AC while (EECR .1 == 1); // Wait till EEPROM is ready
-;PCODE: $000002F9 VOL: 0
-;PCODE: $000002FA VOL: 0
-;PCODE: $000002FB VOL: 0
-;PCODE: $000002FC VOL: 0
 ;	address -> R18,R19
 ;	data -> R17
+;PCODE: $000002F5 VOL: 0
+;PCODE: $000002F6 VOL: 0
+;PCODE: $000002F7 VOL: 0
+;PCODE: $000002F8 VOL: 0
+;PCODE: $000002F9 VOL: 0
+;PCODE: $000002FA VOL: 0
+; 0000 01AB EEAR = address;       // Prepare the address you want to read from
+;PCODE: $000002FB VOL: 0
+;PCODE: $000002FC VOL: 0
+; 0000 01AC EEDR = data;          // Prepare the data you want to write in the address above
 ;PCODE: $000002FD VOL: 0
 ;PCODE: $000002FE VOL: 0
+; 0000 01AD EECR .2 = 1;          // Master write enable
 ;PCODE: $000002FF VOL: 0
 ;PCODE: $00000300 VOL: 0
+; 0000 01AE EECR .1 = 1;          // Write Enable
 ;PCODE: $00000301 VOL: 0
 ;PCODE: $00000302 VOL: 0
-; 0000 01AD EEAR = address;       // Prepare the address you want to read from
+; 0000 01AF }
 ;PCODE: $00000303 VOL: 0
 ;PCODE: $00000304 VOL: 0
-; 0000 01AE EEDR = data;          // Prepare the data you want to write in the address above
 ;PCODE: $00000305 VOL: 0
 ;PCODE: $00000306 VOL: 0
-; 0000 01AF EECR .2 = 1;          // Master write enable
+;void EE_WriteString(unsigned int address, const char *str)
+; 0000 01B2 {
 ;PCODE: $00000307 VOL: 0
 ;PCODE: $00000308 VOL: 0
-; 0000 01B0 EECR .1 = 1;          // Write Enable
+; 0000 01B3 // Write each character of the string to EEPROM
+; 0000 01B4 while (*str)
 ;PCODE: $00000309 VOL: 0
 ;PCODE: $0000030A VOL: 0
-; 0000 01B1 }
 ;PCODE: $0000030B VOL: 0
 ;PCODE: $0000030C VOL: 0
+;	address -> R18,R19
+;	*str -> R16,R17
 ;PCODE: $0000030D VOL: 0
 ;PCODE: $0000030E VOL: 0
-;void EE_WriteString(unsigned int address, const char *str)
-; 0000 01B4 {
 ;PCODE: $0000030F VOL: 0
 ;PCODE: $00000310 VOL: 0
-; 0000 01B5 // Write each character of the string to EEPROM
-; 0000 01B6 while (*str)
 ;PCODE: $00000311 VOL: 0
+; 0000 01B5 EE_Write(address++, *str++);
 ;PCODE: $00000312 VOL: 0
 ;PCODE: $00000313 VOL: 0
 ;PCODE: $00000314 VOL: 0
-;	address -> R18,R19
-;	*str -> R16,R17
 ;PCODE: $00000315 VOL: 0
 ;PCODE: $00000316 VOL: 0
 ;PCODE: $00000317 VOL: 0
 ;PCODE: $00000318 VOL: 0
 ;PCODE: $00000319 VOL: 0
-; 0000 01B7 EE_Write(address++, *str++);
 ;PCODE: $0000031A VOL: 0
 ;PCODE: $0000031B VOL: 0
 ;PCODE: $0000031C VOL: 0
+; 0000 01B7 EE_Write(address, '\0');
 ;PCODE: $0000031D VOL: 0
 ;PCODE: $0000031E VOL: 0
 ;PCODE: $0000031F VOL: 0
+; 0000 01B8 }
 ;PCODE: $00000320 VOL: 0
 ;PCODE: $00000321 VOL: 0
 ;PCODE: $00000322 VOL: 0
 ;PCODE: $00000323 VOL: 0
+;void EE_ReadString(unsigned int address, char *buffer, unsigned int length)
+; 0000 01BB {
 ;PCODE: $00000324 VOL: 0
-; 0000 01B9 EE_Write(address, '\0');
 ;PCODE: $00000325 VOL: 0
+; 0000 01BC unsigned int i;
+; 0000 01BD for (i = 0; i < length; ++i)
 ;PCODE: $00000326 VOL: 0
 ;PCODE: $00000327 VOL: 0
-; 0000 01BA }
 ;PCODE: $00000328 VOL: 0
 ;PCODE: $00000329 VOL: 0
-;PCODE: $0000032A VOL: 0
-;PCODE: $0000032B VOL: 0
-;void EE_ReadString(unsigned int address, char *buffer, unsigned int length)
-; 0000 01BD {
-;PCODE: $0000032C VOL: 0
-;PCODE: $0000032D VOL: 0
-; 0000 01BE unsigned int i;
-; 0000 01BF for (i = 0; i < length; ++i)
-;PCODE: $0000032E VOL: 0
-;PCODE: $0000032F VOL: 0
-;PCODE: $00000330 VOL: 0
-;PCODE: $00000331 VOL: 0
 ;	address -> Y+8
 ;	*buffer -> R20,R21
 ;	length -> R18,R19
 ;	i -> R16,R17
+;PCODE: $0000032A VOL: 0
+;PCODE: $0000032B VOL: 0
+;PCODE: $0000032C VOL: 0
+;PCODE: $0000032D VOL: 0
+;PCODE: $0000032E VOL: 0
+;PCODE: $0000032F VOL: 0
+;PCODE: $00000330 VOL: 0
+;PCODE: $00000331 VOL: 0
 ;PCODE: $00000332 VOL: 0
+; 0000 01BE {
+; 0000 01BF buffer[i] = EE_Read(address + i);
 ;PCODE: $00000333 VOL: 0
 ;PCODE: $00000334 VOL: 0
 ;PCODE: $00000335 VOL: 0
@@ -1307,196 +1307,186 @@ _0x3B:
 ;PCODE: $00000338 VOL: 0
 ;PCODE: $00000339 VOL: 0
 ;PCODE: $0000033A VOL: 0
-; 0000 01C0 {
-; 0000 01C1 buffer[i] = EE_Read(address + i);
+; 0000 01C0 if (buffer[i] == '\0')
 ;PCODE: $0000033B VOL: 0
 ;PCODE: $0000033C VOL: 0
 ;PCODE: $0000033D VOL: 0
 ;PCODE: $0000033E VOL: 0
 ;PCODE: $0000033F VOL: 0
+; 0000 01C1 break;
 ;PCODE: $00000340 VOL: 0
+; 0000 01C2 }
 ;PCODE: $00000341 VOL: 0
 ;PCODE: $00000342 VOL: 0
-; 0000 01C2 if (buffer[i] == '\0')
 ;PCODE: $00000343 VOL: 0
 ;PCODE: $00000344 VOL: 0
 ;PCODE: $00000345 VOL: 0
 ;PCODE: $00000346 VOL: 0
+; 0000 01C3 }
 ;PCODE: $00000347 VOL: 0
-; 0000 01C3 break;
 ;PCODE: $00000348 VOL: 0
-; 0000 01C4 }
 ;PCODE: $00000349 VOL: 0
 ;PCODE: $0000034A VOL: 0
+;void initializeUsers()
+; 0000 01C6 {
 ;PCODE: $0000034B VOL: 0
 ;PCODE: $0000034C VOL: 0
+; 0000 01C7 unsigned int address = 0;
+; 0000 01C8 int i;
+; 0000 01C9 for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 ;PCODE: $0000034D VOL: 0
+;	address -> R16,R17
+;	i -> R18,R19
 ;PCODE: $0000034E VOL: 0
-; 0000 01C5 }
 ;PCODE: $0000034F VOL: 0
 ;PCODE: $00000350 VOL: 0
 ;PCODE: $00000351 VOL: 0
 ;PCODE: $00000352 VOL: 0
-;void initializeUsers()
-; 0000 01C8 {
 ;PCODE: $00000353 VOL: 0
 ;PCODE: $00000354 VOL: 0
-; 0000 01C9 unsigned int address = 0;
-; 0000 01CA int i;
-; 0000 01CB for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 ;PCODE: $00000355 VOL: 0
-;	address -> R16,R17
-;	i -> R18,R19
 ;PCODE: $00000356 VOL: 0
 ;PCODE: $00000357 VOL: 0
 ;PCODE: $00000358 VOL: 0
+; 0000 01CA {
+; 0000 01CB EE_WriteString(address, users[i].name);
 ;PCODE: $00000359 VOL: 0
 ;PCODE: $0000035A VOL: 0
 ;PCODE: $0000035B VOL: 0
 ;PCODE: $0000035C VOL: 0
 ;PCODE: $0000035D VOL: 0
 ;PCODE: $0000035E VOL: 0
+; 0000 01CC address += sizeof(users[i].name);
 ;PCODE: $0000035F VOL: 0
 ;PCODE: $00000360 VOL: 0
-; 0000 01CC {
-; 0000 01CD EE_WriteString(address, users[i].name);
+; 0000 01CD 
+; 0000 01CE EE_WriteString(address, users[i].id);
 ;PCODE: $00000361 VOL: 0
 ;PCODE: $00000362 VOL: 0
 ;PCODE: $00000363 VOL: 0
 ;PCODE: $00000364 VOL: 0
 ;PCODE: $00000365 VOL: 0
 ;PCODE: $00000366 VOL: 0
-; 0000 01CE address += sizeof(users[i].name);
 ;PCODE: $00000367 VOL: 0
+; 0000 01CF address += sizeof(users[i].id);
 ;PCODE: $00000368 VOL: 0
-; 0000 01CF 
-; 0000 01D0 EE_WriteString(address, users[i].id);
 ;PCODE: $00000369 VOL: 0
+; 0000 01D0 
+; 0000 01D1 EE_WriteString(address, users[i].pc);
 ;PCODE: $0000036A VOL: 0
 ;PCODE: $0000036B VOL: 0
 ;PCODE: $0000036C VOL: 0
 ;PCODE: $0000036D VOL: 0
 ;PCODE: $0000036E VOL: 0
 ;PCODE: $0000036F VOL: 0
-; 0000 01D1 address += sizeof(users[i].id);
 ;PCODE: $00000370 VOL: 0
+; 0000 01D2 address += sizeof(users[i].pc);
 ;PCODE: $00000371 VOL: 0
-; 0000 01D2 
-; 0000 01D3 EE_WriteString(address, users[i].pc);
 ;PCODE: $00000372 VOL: 0
+; 0000 01D3 }
 ;PCODE: $00000373 VOL: 0
 ;PCODE: $00000374 VOL: 0
 ;PCODE: $00000375 VOL: 0
 ;PCODE: $00000376 VOL: 0
 ;PCODE: $00000377 VOL: 0
+; 0000 01D4 }
 ;PCODE: $00000378 VOL: 0
-; 0000 01D4 address += sizeof(users[i].pc);
 ;PCODE: $00000379 VOL: 0
 ;PCODE: $0000037A VOL: 0
-; 0000 01D5 }
 ;PCODE: $0000037B VOL: 0
+;void displayMessage(char *message, int delay_ms_value)
+; 0000 01D7 {
 ;PCODE: $0000037C VOL: 0
 ;PCODE: $0000037D VOL: 0
+; 0000 01D8 lcd_clear();
 ;PCODE: $0000037E VOL: 0
 ;PCODE: $0000037F VOL: 0
-; 0000 01D6 }
 ;PCODE: $00000380 VOL: 0
 ;PCODE: $00000381 VOL: 0
+;	*message -> R18,R19
+;	delay_ms_value -> R16,R17
 ;PCODE: $00000382 VOL: 0
+; 0000 01D9 lcd_puts(message);
 ;PCODE: $00000383 VOL: 0
-;void displayMessage(char *message, int delay_ms_value)
-; 0000 01D9 {
 ;PCODE: $00000384 VOL: 0
+; 0000 01DA delay_ms(delay_ms_value);
 ;PCODE: $00000385 VOL: 0
-; 0000 01DA lcd_clear();
 ;PCODE: $00000386 VOL: 0
+; 0000 01DB }
 ;PCODE: $00000387 VOL: 0
 ;PCODE: $00000388 VOL: 0
 ;PCODE: $00000389 VOL: 0
-;	*message -> R18,R19
-;	delay_ms_value -> R16,R17
 ;PCODE: $0000038A VOL: 0
-; 0000 01DB lcd_puts(message);
+;int enterValueWithKeypad(char *buffer)
+; 0000 01DE {
 ;PCODE: $0000038B VOL: 0
 ;PCODE: $0000038C VOL: 0
-; 0000 01DC delay_ms(delay_ms_value);
+; 0000 01DF buffer[0] = keypad() + '0';
 ;PCODE: $0000038D VOL: 0
 ;PCODE: $0000038E VOL: 0
-; 0000 01DD }
 ;PCODE: $0000038F VOL: 0
+;	*buffer -> R16,R17
 ;PCODE: $00000390 VOL: 0
 ;PCODE: $00000391 VOL: 0
 ;PCODE: $00000392 VOL: 0
-;int enterValueWithKeypad(char *buffer)
-; 0000 01E0 {
 ;PCODE: $00000393 VOL: 0
+; 0000 01E0 lcd_putchar(buffer[0]);
 ;PCODE: $00000394 VOL: 0
-; 0000 01E1 buffer[0] = keypad() + '0';
 ;PCODE: $00000395 VOL: 0
 ;PCODE: $00000396 VOL: 0
+; 0000 01E1 buffer[1] = keypad() + '0';
 ;PCODE: $00000397 VOL: 0
-;	*buffer -> R16,R17
 ;PCODE: $00000398 VOL: 0
 ;PCODE: $00000399 VOL: 0
 ;PCODE: $0000039A VOL: 0
+; 0000 01E2 lcd_putchar(buffer[1]);
 ;PCODE: $0000039B VOL: 0
-; 0000 01E2 lcd_putchar(buffer[0]);
 ;PCODE: $0000039C VOL: 0
 ;PCODE: $0000039D VOL: 0
+; 0000 01E3 buffer[2] = keypad() + '0';
 ;PCODE: $0000039E VOL: 0
-; 0000 01E3 buffer[1] = keypad() + '0';
 ;PCODE: $0000039F VOL: 0
 ;PCODE: $000003A0 VOL: 0
 ;PCODE: $000003A1 VOL: 0
+; 0000 01E4 lcd_putchar(buffer[2]);
 ;PCODE: $000003A2 VOL: 0
-; 0000 01E4 lcd_putchar(buffer[1]);
 ;PCODE: $000003A3 VOL: 0
 ;PCODE: $000003A4 VOL: 0
+; 0000 01E5 buffer[3] = '\0';  // Null-terminate the string
 ;PCODE: $000003A5 VOL: 0
-; 0000 01E5 buffer[2] = keypad() + '0';
 ;PCODE: $000003A6 VOL: 0
 ;PCODE: $000003A7 VOL: 0
 ;PCODE: $000003A8 VOL: 0
+; 0000 01E6 
+; 0000 01E7 delay_ms(1000);
 ;PCODE: $000003A9 VOL: 0
-; 0000 01E6 lcd_putchar(buffer[2]);
 ;PCODE: $000003AA VOL: 0
+; 0000 01E8 
+; 0000 01E9 return 1;  // Return a non-zero value to indicate success
 ;PCODE: $000003AB VOL: 0
 ;PCODE: $000003AC VOL: 0
-; 0000 01E7 buffer[3] = '\0';  // Null-terminate the string
 ;PCODE: $000003AD VOL: 0
+; 0000 01EA }
 ;PCODE: $000003AE VOL: 0
+;void generateTone()
+; 0000 01ED {
 ;PCODE: $000003AF VOL: 0
 ;PCODE: $000003B0 VOL: 0
-; 0000 01E8 
-; 0000 01E9 delay_ms(1000);
+; 0000 01EE PORTD.7 = 1;  // Set PD7 HIGH
 ;PCODE: $000003B1 VOL: 0
 ;PCODE: $000003B2 VOL: 0
-; 0000 01EA 
-; 0000 01EB return 1;  // Return a non-zero value to indicate success
+; 0000 01EF delay_ms(500);  // Adjust duration as needed
 ;PCODE: $000003B3 VOL: 0
 ;PCODE: $000003B4 VOL: 0
+; 0000 01F0 PORTD.7 = 0;  // Set PD7 LOW
 ;PCODE: $000003B5 VOL: 0
-; 0000 01EC }
 ;PCODE: $000003B6 VOL: 0
-;void generateTone()
-; 0000 01EF {
+; 0000 01F1 delay_ms(500);  // Pause between tones
 ;PCODE: $000003B7 VOL: 0
 ;PCODE: $000003B8 VOL: 0
-; 0000 01F0 PORTD.7 = 1;  // Set PD7 HIGH
+; 0000 01F2 PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
 ;PCODE: $000003B9 VOL: 0
 ;PCODE: $000003BA VOL: 0
-; 0000 01F1 delay_ms(500);  // Adjust duration as needed
+; 0000 01F3 }
 ;PCODE: $000003BB VOL: 0
 ;PCODE: $000003BC VOL: 0
-; 0000 01F2 PORTD.7 = 0;  // Set PD7 LOW
-;PCODE: $000003BD VOL: 0
-;PCODE: $000003BE VOL: 0
-; 0000 01F3 delay_ms(500);  // Pause between tones
-;PCODE: $000003BF VOL: 0
-;PCODE: $000003C0 VOL: 0
-; 0000 01F4 PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
-;PCODE: $000003C1 VOL: 0
-;PCODE: $000003C2 VOL: 0
-; 0000 01F5 }
-;PCODE: $000003C3 VOL: 0
-;PCODE: $000003C4 VOL: 0
