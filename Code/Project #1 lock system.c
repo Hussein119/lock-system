@@ -295,7 +295,6 @@ interrupt [2] void admin (void) // vector no 2 -> INT0
 		if (strcmp(admin.pc, enteredPC) == 0)
 			{
 			displayMessage("Enter Student ID: ", 1000);
-            lcd_gotoxy(0, 1);
 
 			if (enterValueWithKeypad(enteredStudentID))
 				{
@@ -308,7 +307,6 @@ interrupt [2] void admin (void) // vector no 2 -> INT0
 					if (strcmp(student.id, enteredStudentID) == 0)
 						{
 						displayMessage("Enter student's new PC: ", 1000);
-                        lcd_gotoxy(0, 1);
 						if (enterValueWithKeypad(enteredNewPC))
 							{
 							// Set the new pc for this student, address is for student PC
