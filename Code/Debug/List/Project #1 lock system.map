@@ -1,8 +1,8 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-users                                                                             0x022D      70
-_base_y (alcd.lib)                                                                0x0273       4
+users                                                                             0x02BD      70
+_base_y (alcd.lib)                                                                0x0303       4
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -18,23 +18,24 @@ _lcd_maxx                                                                       
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x00119     30
-Reset                                                                             0x00137     95
-ext1                                                                              0x00196    167
-keypad                                                                            0x0023D     85
-EE_Read                                                                           0x00292     10
-EE_Write                                                                          0x0029C     12
-EE_WriteString                                                                    0x002A8     20
-EE_ReadString                                                                     0x002BC     34
-initializeUsers                                                                   0x002DE     34
-displayMessage                                                                    0x00300      9
-enterValueWithKeypad                                                              0x00309     37
-generateTone                                                                      0x0032E     10
-_lcd_write_nibble_G100                                                            0x00338     21
-_lcd_write_data                                                                   0x0034D     13
-lcd_gotoxy                                                                        0x0035A     18
-lcd_clear                                                                         0x0036C     10
-lcd_putchar                                                                       0x00376     19
-lcd_puts                                                                          0x00389     15
-lcd_init                                                                          0x00398     43
-strcmp                                                                            0x003C3     20
+main                                                                              0x00174     35
+SetPC                                                                             0x00197    107
+Reset                                                                             0x00202     77
+ext1                                                                              0x0024F    169
+keypad                                                                            0x002F8     85
+EE_Read                                                                           0x0034D     10
+EE_Write                                                                          0x00357     12
+EE_WriteString                                                                    0x00363     20
+EE_ReadString                                                                     0x00377     34
+initializeUsers                                                                   0x00399     34
+displayMessage                                                                    0x003BB      9
+enterValueWithKeypad                                                              0x003C4     37
+generateTone                                                                      0x003E9     10
+_lcd_write_nibble_G100                                                            0x003F3     21
+_lcd_write_data                                                                   0x00408     13
+lcd_gotoxy                                                                        0x00415     18
+lcd_clear                                                                         0x00427     10
+lcd_putchar                                                                       0x00431     19
+lcd_puts                                                                          0x00444     15
+lcd_init                                                                          0x00453     43
+strcmp                                                                            0x0047E     20
