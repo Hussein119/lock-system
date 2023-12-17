@@ -30,7 +30,7 @@ The lock system provides password-based access control, an LCD display for user 
   - **Press ‘\*’ to open door interrupt 0**
   - **Admin interrupt 1**
   - **Set PC interrupt 2**
-- Option 2 (Slide)
+- Option 2 (Recommended)
   - **Admin interrupt 0**
   - **Set PC interrupt 1**
   - **Press ‘\*’ to open door interrupt 2**
@@ -76,18 +76,6 @@ Test the lock system with the predefined password, verify LED indicators, and ex
 ## Documentation
 
 The documentation includes detailed information about the project, divided into three parts:
-
-### Part 1 - Door Opening
-
-- `door_opening.c`: Main C code for opening the door.
-
-### Part 2 - Set New PC
-
-- `set_new_pc.c`: Main C code for setting a new PC.
-
-### Part 3 - Admin Access
-
-- `admin_access.c`: Main C code for administrative access.
 
 ### Proteus Simulation
 
