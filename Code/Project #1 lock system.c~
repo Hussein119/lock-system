@@ -10,6 +10,7 @@
 #include <delay.h>
 #include <string.h>
 
+// interrupts MCUCR & GICR
 #define bit_set(r, b) r |= 1 << b
 #define bit_clr(r, b) r &= ~(1 << b)
 
@@ -26,7 +27,7 @@ void generateTone();
 // User structure to store user data
 typedef struct
 {
-	const char *name;
+	char name[6];
 	char id[4];  // Change data type to string
 	char pc[4];  // Change data type to string
 } User;
@@ -42,84 +43,109 @@ User users[] =
 
 void main(void)
 {
+
 	// Set keypad ports
-	DDRC = 0b00000111;
-	PORTC = 0b11111000;
+	DDRC = 0b00000111; // 1 unused pin , 4 rows (input) , 3 cloumns (output)
+	PORTC = 0b11111000; // pull up resistance
 
 	// Initialize the LCD
 	lcd_init(16);
 
+
 	// Set the door as input (now by default the door is closed)
 	DDRB .0 = 0;
 	PORTB .0 = 1; // turn on pull up resistance
-    
-    // Set the speaker as a output 
-    DDRD.7 = 1;
-    PORTD.7 = 1; // Set it to 1 initially
+
+	// Set the speaker as a output
+	DDRD.7 = 1;
+	PORTD.7 = 1; // Set it to 1 initially
 
 	// Initialize user data in EEPROM
 	initializeUsers();
 
-	while (1)
+	PORTD.2 = 1; // turn on pull up resistance for INT0 intrrupt
+
+	// actual casue (The falling edge of INT0)
+	bit_set(MCUCR, 1);
+	bit_clr(MCUCR, 0);
+
+	// Enable global interrupts
+#asm("sei")
+
+	// GICR INT0 (bit no 6) , EXT0 spacific enable
+	bit_set(GICR, 6);
+
+}
+
+
+interrupt [2] void Reset (void) // vector no 2 -> INT0
+{
+	// action on click on a button
+
+	char enteredID[4];  // Change data type to string
+	User currentUser;
+	unsigned int address = 0;
+	int userFound = 0;
+	int i;
+
+	displayMessage("Enter your ID: ", 1000);
+
+	if (enterValueWithKeypad(enteredID))
 		{
-		char enteredID[4];  // Change data type to string
-		User currentUser;
-		unsigned int address = 0;
-		int userFound = 0;
-		int i;
-
-		displayMessage("Enter your ID: ", 1000);
-
-		if (enterValueWithKeypad(enteredID))
+		char enteredPC[4];
+		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
 			{
-			char enteredPC[4];
-			for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
+			EE_ReadString(address, currentUser.name, sizeof(users[i].name));
+			address += sizeof(users[i].name);
+			EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
+
+			if (strcmp(currentUser.id, enteredID) == 0)
 				{
-				address += sizeof(users[i].name);
-				EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
-
-				if (strcmp(currentUser.id, enteredID) == 0)
-					{
-
-					address += sizeof(users[i].id);
-					EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
-
-					displayMessage("Enter your PC: ", 1000);
-
-					if (enterValueWithKeypad(enteredPC))
-						{
-						if (strcmp(currentUser.pc, enteredPC) == 0)
-							{
-							displayMessage("Welcome", 1000);
-							// Open the door 
-                            DDRB .0 = 1;
-							}
-						else
-							displayMessage("Sorry wrong PC", 1000);
-                            // one peep alarm
-                            generateTone();
-						}
-
-					userFound = 1;
-					break;
-					}
 
 				address += sizeof(users[i].id);
-				address += sizeof(users[i].pc);
+				EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
+
+				displayMessage("Enter your PC: ", 1000);
+
+				if (enterValueWithKeypad(enteredPC))
+					{
+					if (strcmp(currentUser.pc, enteredPC) == 0)
+						{
+						lcd_clear();
+						lcd_puts("Welcome, ");
+						lcd_puts(currentUser.name);
+						// Open the door
+						DDRB .0 = 1;
+						}
+					else
+						{
+						displayMessage("Sorry wrong PC", 1000);
+						// one peep alarm
+						generateTone();
+						}
+					}
+				userFound = 1;
+				break;
 				}
-			}
 
-		if (!userFound)
-			{
-			displayMessage("Wrong ID", 1000);
-			// Two peeps alarm
-            generateTone();
-            generateTone();
+			address += sizeof(users[i].id);
+			address += sizeof(users[i].pc);
 			}
-
-		delay_ms(2000);
 		}
+
+	if (!userFound)
+		{
+		displayMessage("Wrong ID", 1000);
+		// Two peeps alarm
+		generateTone();
+		generateTone();
+		}
+	delay_ms(5000);
+	// close the door
+	DDRB .0 = 0;
+    lcd_clear();
 }
+
 
 char keypad()
 {
@@ -128,6 +154,7 @@ char keypad()
 		PORTC .0 = 0;
 		PORTC .1 = 1;
 		PORTC .2 = 1;
+
 
 		switch (PINC)
 			{
@@ -142,7 +169,7 @@ char keypad()
 				return 7;
 			case 0b10111110:
 				while (PINC .6 == 0);
-				return 10;
+				return '*';
 			}
 
 		PORTC .0 = 1;
@@ -250,23 +277,36 @@ void displayMessage(char *message, int delay_ms_value)
 
 int enterValueWithKeypad(char *buffer)
 {
-    buffer[0] = keypad() + '0';
-    lcd_putchar(buffer[0]);
-    buffer[1] = keypad() + '0';
-    lcd_putchar(buffer[1]);
-    buffer[2] = keypad() + '0';
-    lcd_putchar(buffer[2]);
-    buffer[3] = '\0';  // Null-terminate the string
+	buffer[0] = keypad() + '0';
+	lcd_putchar(buffer[0]);
+	buffer[1] = keypad() + '0';
+	lcd_putchar(buffer[1]);
+	buffer[2] = keypad() + '0';
+	lcd_putchar(buffer[2]);
+	buffer[3] = '\0';  // Null-terminate the string
 
-    delay_ms(1000);
+	delay_ms(1000);
 
-    return 1;  // Return a non-zero value to indicate success
+	return 1;  // Return a non-zero value to indicate success
 }
 void generateTone()
 {
-    PORTD.7 = 1;  // Set PD7 HIGH
-    delay_ms(500);  // Adjust duration as needed
-    PORTD.7 = 0;  // Set PD7 LOW
-    delay_ms(500);  // Pause between tones
-    PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
+	PORTD.7 = 1;  // Set PD7 HIGH
+	delay_ms(500);  // Adjust duration as needed
+	PORTD.7 = 0;  // Set PD7 LOW
+	delay_ms(500);  // Pause between tones
+	PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
 }
+
+
+
+/*
+interrupt [19] void ext0 (void) // vector no 19 -> INT2
+{
+    // action on interrupt
+}
+interrupt [3] void ext1 (void) // vector no 3 -> INT1
+{
+    // action on interrupt
+}
+*/
