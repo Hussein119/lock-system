@@ -62,118 +62,131 @@ void main(void)
 
 	// Initialize user data in EEPROM
 	initializeUsers();
-
+    
+    DDRB.2 = 0; // make button as input
 	PORTB.2 = 1; // turn on pull up resistance for INT2 intrrupt
 
 	// actual casue INT2
 	bit_set(MCUCSR, 6);
-
+    
+    DDRD.2 = 0; // make button as input
 	PORTD.2 = 1; // turn on pull up resistance for INT0 intrrupt
 
 	// actual casue (The falling edge of INT0)
 	bit_set(MCUCR, 1);
 	bit_clr(MCUCR, 0);
-
-    DDRD.3=0; //make button SetPC as input
-    PORTD.3=1; // turn on pull up resistance 
     
-	// Enable global interrupts
-    #asm("sei")
-    // GICR INT1 (bit no 7) , SetPC spacific enable
-    bit_set(GICR,7);
+    // actual casue (The falling edge of INT1)
+	bit_set(MCUCR, 3);
+	bit_clr(MCUCR, 2);
 
-	// GICR INT2 (bit no 5) , EXT2 spacific enable
+	DDRD.3 = 0; // make button SetPC as input
+	PORTD.3 = 1; // turn on pull up resistance
+
+	// Enable global interrupts
+#asm("sei")
+
+	// GICR INT1 (bit no 7) , SetPC spacific enable
+	bit_set(GICR, 7);
+
+	// GICR INT2 (bit no 5) , open spacific enable
 	bit_set(GICR, 5);
 
-	// GICR INT0 (bit no 6) , EXT0 spacific enable
+	// GICR INT0 (bit no 6) , admin spacific enable
 	bit_set(GICR, 6);
-
-
-
 }
 
 interrupt [3] void SetPC (void)     //  vector no 3 -> INT1
 {
-  char enteredID[5];  // Change data type to string 
-    User currentUser;
-    unsigned int address = 0;
-    int userFound = 0;
-    int i;
-    char enteredNewPC[5]; // define enteredNewPC array to hold the new PC
-    char reenteredNewPC[5]; // define reenteredNewPC array to hold the Re-entered new PC
+	char enteredID[5];  // Change data type to string
+	User currentUser;
+	unsigned int address = 0;
+	int userFound = 0;
+	int i;
+	char enteredNewPC[5]; // define enteredNewPC array to hold the new PC
+	char reenteredNewPC[5]; // define reenteredNewPC array to hold the Re-entered new PC
 
-    lcd_clear();
-    displayMessage("Enter your ID:", 1000);
-    lcd_gotoxy(0,1);
-    if (enterValueWithKeypad(enteredID)) {
-        char enteredPC[4];
-        char enteredOldPC[5];
-        // search for the entered ID in the user data
-        for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i) {
-            address += sizeof(users[i].name);
-            EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
-
-            if (strcmp(currentUser.id, enteredID) == 0) {
-                // ID found, verify the old PC
-                address += sizeof(currentUser.id);
-                EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
-                displayMessage("Enter old PC:", 1000);
-                lcd_gotoxy(0,1);
-             
-                if (enterValueWithKeypad(enteredOldPC)) {
-                    if (strcmp(currentUser.pc, enteredOldPC) == 0) {
-                        // Old PC verified
-                        displayMessage("Enter new PC:", 1000);
-                        lcd_gotoxy(0,1);
-                        enterValueWithKeypad(enteredNewPC);
-
-                        lcd_clear();
-                        displayMessage("Re-enter new PC:", 1000);
-                        lcd_gotoxy(0,1);
-                        enterValueWithKeypad(reenteredNewPC);
-
-                        if (strcmp(enteredNewPC, reenteredNewPC) == 0) {
-                            // If new PC entered correctly, store it
-                             EE_WriteString(address,enteredNewPC);
-                            displayMessage("New PC stored", 1000); 
-                            generateTone();
-                            DDRB.0 = 1; 
-                        } else {
-                            displayMessage("New PC mismatch, Contact admin", 1000); 
-    		                generateTone();    
-                            generateTone();
-                        }
-                    } else {
-                        displayMessage("Wrong old PC,   Contact admin", 1000);   
-                                                               
-		                generateTone();
-		                generateTone();
-                    }
-                }
-
-                userFound = 1;
-                break;
-            }
-
-            address += sizeof(users[i].id);
-			address += sizeof(users[i].pc);
-						
-        }
-
-        if (!userFound)
+	lcd_clear();
+	displayMessage("Enter your ID:", 1000);
+	lcd_gotoxy(0, 1);
+	if (enterValueWithKeypad(enteredID))
 		{
-		displayMessage("Wrong ID", 1000);
-		generateTone();
-		generateTone();
+		// char enteredPC[4];
+		char enteredOldPC[5];
+		// search for the entered ID in the user data
+		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
+			{
+			address += sizeof(users[i].name);
+			EE_ReadString(address, currentUser.id, sizeof(currentUser.id));  // Read ID as a string
+
+			if (strcmp(currentUser.id, enteredID) == 0)
+				{
+				// ID found, verify the old PC
+				address += sizeof(currentUser.id);
+				EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
+				displayMessage("Enter old PC:", 1000);
+				lcd_gotoxy(0, 1);
+
+				if (enterValueWithKeypad(enteredOldPC))
+					{
+					if (strcmp(currentUser.pc, enteredOldPC) == 0)
+						{
+						// Old PC verified
+						displayMessage("Enter new PC:", 1000);
+						lcd_gotoxy(0, 1);
+						enterValueWithKeypad(enteredNewPC);
+
+						lcd_clear();
+						displayMessage("Re-enter new PC:", 1000);
+						lcd_gotoxy(0, 1);
+						enterValueWithKeypad(reenteredNewPC);
+
+						if (strcmp(enteredNewPC, reenteredNewPC) == 0)
+							{
+							// If new PC entered correctly, store it
+							EE_WriteString(address, enteredNewPC);
+							displayMessage("New PC stored", 1000);
+							DDRB.0 = 1;
+							}
+						else
+							{
+							displayMessage("New PC mismatch, Contact admin", 1000);
+							generateTone();
+							generateTone();
+							}
+						}
+					else
+						{
+						displayMessage("Wrong old PC,   Contact admin", 1000);
+
+						generateTone();
+						generateTone();
+						}
+					}
+
+				userFound = 1;
+				break;
+				}
+
+			address += sizeof(users[i].id);
+			address += sizeof(users[i].pc);
+
+			}
+
+		if (!userFound)
+			{
+			displayMessage("Wrong ID", 1000);
+			generateTone();
+			generateTone();
+			}
+		delay_ms(5000);
+		// close the door and clear lcd
+		DDRB .0 = 0;
+		lcd_clear();
 		}
-	delay_ms(5000);
-	// close the door and clear lcd
-	DDRB .0 = 0;
-    lcd_clear();
-}  
 }
 
-interrupt [19] void Reset (void) // vector no 19 -> INT2 
+interrupt [19] void open (void) // vector no 19 -> INT2
 {
 	// action on click on a button
 
@@ -184,6 +197,7 @@ interrupt [19] void Reset (void) // vector no 19 -> INT2
 	int i;
 
 	displayMessage("Enter your ID: ", 1000);
+    lcd_gotoxy(0, 1);
 
 	if (enterValueWithKeypad(enteredID))
 		{
@@ -201,6 +215,7 @@ interrupt [19] void Reset (void) // vector no 19 -> INT2
 				EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc));  // Read PC as a string
 
 				displayMessage("Enter your PC: ", 1000);
+                lcd_gotoxy(0, 1);
 
 				if (enterValueWithKeypad(enteredPC))
 					{
@@ -241,7 +256,7 @@ interrupt [19] void Reset (void) // vector no 19 -> INT2
 	lcd_clear();
 }
 
-interrupt [2] void ext1 (void) // vector no 2 -> INT0
+interrupt [2] void admin (void) // vector no 2 -> INT0
 {
 	// action on interrupt
 	char enteredPC[4];
@@ -249,7 +264,7 @@ interrupt [2] void ext1 (void) // vector no 2 -> INT0
 	char enteredNewPC[4];
 	User student;
 	User admin;
-    unsigned int adminPCAddress = 0;
+	unsigned int adminPCAddress = 0;
 	unsigned int address = 0;
 	int userFound = 0;
 	int i;
@@ -263,15 +278,16 @@ interrupt [2] void ext1 (void) // vector no 2 -> INT0
 			EE_ReadString(address, admin.id, sizeof(admin.id));
 			address += sizeof(users[i].id);
 			EE_ReadString(address, admin.pc, sizeof(admin.pc));
-            adminPCAddress = address;
+			adminPCAddress = address;
 			break;
 			}
 		address += sizeof(users[i].pc);
 		}
-        
-    address = 0; // reset the address
+
+	address = 0; // reset the address
 
 	displayMessage("Enter Admin PC: ", 1000);
+    lcd_gotoxy(0, 1);
 
 	if (enterValueWithKeypad(enteredPC))
 		{
@@ -279,21 +295,23 @@ interrupt [2] void ext1 (void) // vector no 2 -> INT0
 		if (strcmp(admin.pc, enteredPC) == 0)
 			{
 			displayMessage("Enter Student ID: ", 1000);
+            lcd_gotoxy(0, 1);
 
 			if (enterValueWithKeypad(enteredStudentID))
 				{
-                int j;
+				int j;
 				for (j = 0; j < sizeof(users) / sizeof(users[0]); ++j)
 					{
 					address += sizeof(users[j].name);
 					EE_ReadString(address, student.id, sizeof(student.id));
-                    address += sizeof(users[j].id);
+					address += sizeof(users[j].id);
 					if (strcmp(student.id, enteredStudentID) == 0)
 						{
 						displayMessage("Enter student's new PC: ", 1000);
+                        lcd_gotoxy(0, 1);
 						if (enterValueWithKeypad(enteredNewPC))
 							{
-							// Set the new pc for this student, address is for student PC  
+							// Set the new pc for this student, address is for student PC
 							EE_WriteString(address, enteredNewPC);
 							displayMessage("Student PC is stored", 3000);
 							userFound = 1;
@@ -303,6 +321,7 @@ interrupt [2] void ext1 (void) // vector no 2 -> INT0
 					else if (strcmp(admin.id, enteredStudentID) == 0)
 						{
 						displayMessage("Enter your new PC: ", 1000);
+                        lcd_gotoxy(0, 1);
 						if (enterValueWithKeypad(enteredNewPC))
 							{
 							// Set the new pc for this user (Admin),  address is for admin PC
