@@ -28,8 +28,8 @@ void generateTone();
 typedef struct
 {
 	char name[6];
-	char id[4];  // Change data type to string
-	char pc[4];  // Change data type to string
+	char id[4];
+	char pc[4];
 } User;
 User users[] =
 {
@@ -69,11 +69,20 @@ void main(void)
 	bit_set(MCUCR, 1);
 	bit_clr(MCUCR, 0);
 
+	PORTD.3 = 1; // turn on pull up resistance for INT1 intrrupt
+
+	// actual casue (The falling edge of INT1)
+	bit_set(MCUCR, 3);
+	bit_clr(MCUCR, 2);
+
 	// Enable global interrupts
 #asm("sei")
 
 	// GICR INT0 (bit no 6) , EXT0 spacific enable
 	bit_set(GICR, 6);
+
+	// GICR INT1 (bit no 7) , EXT1 spacific enable
+	bit_set(GICR, 7);
 
 }
 
@@ -143,7 +152,95 @@ interrupt [2] void Reset (void) // vector no 2 -> INT0
 	delay_ms(5000);
 	// close the door and clear lcd
 	DDRB .0 = 0;
-    lcd_clear();
+	lcd_clear();
+}
+
+interrupt [3] void ext1 (void) // vector no 3 -> INT1
+{
+	// action on interrupt
+	char enteredPC[4];
+	char enteredStudentID[4];
+	char enteredNewPC[4];
+	User student;
+	User admin;
+    unsigned int adminPCAddress = 0;
+	unsigned int address = 0;
+	int userFound = 0;
+	int i;
+
+	for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
+		{
+		EE_ReadString(address, admin.name, sizeof(users[i].name));
+		if (strcmp(admin.name, "Prof") == 0)
+			{
+			address += sizeof(users[i].name);
+			EE_ReadString(address, admin.id, sizeof(admin.id));
+			address += sizeof(users[i].id);
+			EE_ReadString(address, admin.pc, sizeof(admin.pc));
+            adminPCAddress = address;
+			break;
+			}
+		address += sizeof(users[i].pc);
+		}
+        
+    address = 0; // reset the address
+
+	displayMessage("Enter Admin PC: ", 1000);
+
+	if (enterValueWithKeypad(enteredPC))
+		{
+
+		if (strcmp(admin.pc, enteredPC) == 0)
+			{
+			displayMessage("Enter Student ID: ", 1000);
+
+			if (enterValueWithKeypad(enteredStudentID))
+				{
+                int j;
+				for (j = 0; j < sizeof(users) / sizeof(users[0]); ++j)
+					{
+					address += sizeof(users[j].name);
+					EE_ReadString(address, student.id, sizeof(student.id));
+                    address += sizeof(users[j].id);
+					if (strcmp(student.id, enteredStudentID) == 0)
+						{
+						displayMessage("Enter student's new PC: ", 1000);
+						if (enterValueWithKeypad(enteredNewPC))
+							{
+							// Set the new pc for this student, address is for student PC  
+							EE_WriteString(address, enteredNewPC);
+							displayMessage("Student PC is stored", 3000);
+							userFound = 1;
+							break;
+							}
+						}
+					else if (strcmp(admin.id, enteredStudentID) == 0)
+						{
+						displayMessage("Enter your new PC: ", 1000);
+						if (enterValueWithKeypad(enteredNewPC))
+							{
+							// Set the new pc for this user (Admin),  address is for admin PC
+							EE_WriteString(adminPCAddress, enteredNewPC);
+							displayMessage("Your PC is stored", 3000);
+							userFound = 1;
+							break;
+							}
+						}
+					address += sizeof(users[i].pc);
+					}
+				}
+			}
+		}
+
+	if (!userFound)
+		{
+		displayMessage("Contact Admin", 3000);
+		// Two peeps alarm
+		generateTone();
+		generateTone();
+		}
+	delay_ms(5000);
+	lcd_clear();
 }
 
 
