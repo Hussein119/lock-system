@@ -63,31 +63,36 @@ void main(void)
 	// Initialize user data in EEPROM
 	initializeUsers();
 
+	PORTB.2 = 1; // turn on pull up resistance for INT2 intrrupt
+
+	// actual casue INT2
+	bit_set(MCUCSR, 6);
+
 	PORTD.2 = 1; // turn on pull up resistance for INT0 intrrupt
 
 	// actual casue (The falling edge of INT0)
 	bit_set(MCUCR, 1);
 	bit_clr(MCUCR, 0);
 
-	PORTD.3 = 1; // turn on pull up resistance for INT1 intrrupt
-
-	// actual casue (The falling edge of INT1)
-	bit_set(MCUCR, 3);
-	bit_clr(MCUCR, 2);
-
 	// Enable global interrupts
 #asm("sei")
+
+	// GICR INT2 (bit no 5) , EXT2 spacific enable
+	bit_set(GICR, 5);
 
 	// GICR INT0 (bit no 6) , EXT0 spacific enable
 	bit_set(GICR, 6);
 
-	// GICR INT1 (bit no 7) , EXT1 spacific enable
-	bit_set(GICR, 7);
-
 }
 
+/*
+interrupt [3] void ext1 (void) // vector no 3 -> INT1
+{
+    // action on interrupt
+}
+*/
 
-interrupt [2] void Reset (void) // vector no 2 -> INT0
+interrupt [19] void Reset (void) // vector no 19 -> INT2 
 {
 	// action on click on a button
 
@@ -155,7 +160,7 @@ interrupt [2] void Reset (void) // vector no 2 -> INT0
 	lcd_clear();
 }
 
-interrupt [3] void ext1 (void) // vector no 3 -> INT1
+interrupt [2] void ext1 (void) // vector no 2 -> INT0
 {
 	// action on interrupt
 	char enteredPC[4];
@@ -242,7 +247,6 @@ interrupt [3] void ext1 (void) // vector no 3 -> INT1
 	delay_ms(5000);
 	lcd_clear();
 }
-
 
 char keypad()
 {
@@ -386,6 +390,7 @@ int enterValueWithKeypad(char *buffer)
 
 	return 1;  // Return a non-zero value to indicate success
 }
+
 void generateTone()
 {
 	PORTD.7 = 1;  // Set PD7 HIGH
@@ -394,16 +399,3 @@ void generateTone()
 	delay_ms(500);  // Pause between tones
 	PORTD.7 = 1;  // Set PD7 HIGH (optional: restore to high for a brief moment)
 }
-
-
-
-/*
-interrupt [19] void ext0 (void) // vector no 19 -> INT2
-{
-    // action on interrupt
-}
-interrupt [3] void ext1 (void) // vector no 3 -> INT1
-{
-    // action on interrupt
-}
-*/
