@@ -287,7 +287,6 @@ void generateTone()
 	// Set PD7 HIGH to generate the tone
 	PORTD .7 = 1;
 
-	// Adjust the duration of the tone as needed
 	delay_ms(500);
 
 	// Set PD7 LOW to stop the tone
@@ -402,7 +401,6 @@ void setPCMode()
 	lcd_gotoxy(0, 1);
 	if (enterValueWithKeypad(enteredID))
 	{
-		// char enteredPC[4];
 		char enteredOldPC[5];
 		// search for the entered ID in the user data
 		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
