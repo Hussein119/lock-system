@@ -10,7 +10,6 @@
   - [Usage](#usage)
   - [Proteus Simulation](#proteus-simulation)
 - [Main Program Flowchart](#main-program-flowchart)
-- [Acknowledgments](#acknowledgments)
 - [Developers](#developers)
 - [Main function](#main-function)
 - [Header file](#header-file)
@@ -90,15 +89,13 @@ Test the lock system with the predefined password, verify LED indicators, and ex
 4. Red light (for door simulation)
 5. Speaker (Peeps alarm)
 6. Keypad 4x3
-7. 3 Buttons for interrupts
+7. Three Buttons for interrupts
 
 ![Hardware](image.png)
 
-## Acknowledgments
+## Main Program Flowchart
 
-- Proteus 8 Professional
-- CodeVisionAVR Evaluation
-- ATmega16 Microcontroller
+![flowchart](flowchart.pdf)
 
 ## Developers
 
@@ -355,8 +352,7 @@ char keypad()
 // Function to read from EEPROM
 unsigned char EE_Read(unsigned int address)
 {
-	while (EECR .1 == 1)
-		;			// Wait till EEPROM is ready
+	while (EECR .1 == 1); // Wait till EEPROM is ready
 	EEAR = address; // Prepare the address you want to read from
 	EECR .0 = 1;	// Execute read command
 	return EEDR;
@@ -365,8 +361,7 @@ unsigned char EE_Read(unsigned int address)
 // Function to write to EEPROM
 void EE_Write(unsigned int address, unsigned char data)
 {
-	while (EECR .1 == 1)
-		;			// Wait till EEPROM is ready
+	while (EECR .1 == 1); // Wait till EEPROM is ready
 	EEAR = address; // Prepare the address you want to read from
 	EEDR = data;	// Prepare the data you want to write in the address above
 	EECR .2 = 1;	// Master write enable
@@ -378,7 +373,7 @@ void EE_WriteString(unsigned int address, const char *str)
 {
 	// Write each character of the string to EEPROM
 	while (*str)
-		EE_Write(address++, *str++);
+	EE_Write(address++, *str++);
 	// Terminate the string with a null character
 	EE_Write(address, '\0');
 }
@@ -443,7 +438,6 @@ void generateTone()
 	// Set PD7 HIGH to generate the tone
 	PORTD .7 = 1;
 
-	// Adjust the duration of the tone as needed
 	delay_ms(500);
 
 	// Set PD7 LOW to stop the tone
@@ -558,7 +552,6 @@ void setPCMode()
 	lcd_gotoxy(0, 1);
 	if (enterValueWithKeypad(enteredID))
 	{
-		// char enteredPC[4];
 		char enteredOldPC[5];
 		// search for the entered ID in the user data
 		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
