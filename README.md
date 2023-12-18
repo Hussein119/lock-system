@@ -26,19 +26,13 @@ The Embedded Lock System is a collaborative project designed to implement a secu
 
 ### Define interrupts priorities:
 
-Option 1:
+(Recommended):
 
-- Activate the door opening mechanism by pressing the Open button, utilizing interrupt INT0.
-- Trigger interrupt INT1 by pressing the Admin button.
-- Set the PC configuration by pressing the Set PC button, invoking interrupt INT2.
-
-Option 2 (Recommended):
-
-- Press the Open button to open the door, triggering interrupt INT2.
+- Press the Open button to open the door, triggering button '\*'.
 - Prioritize the Admin button by associating it with interrupt INT0.
 - Set the PC configuration with the Set PC button, utilizing interrupt INT1.
 
-The project favors Option 2 because it assigns higher priority to the Admin button, followed logically by the Set PC button, and then the Open button.
+> The project favors this Option because it assigns higher priority to the Admin button, followed logically by the > Set PC button, and then the Open button.
 
 ## Getting Started
 
@@ -95,16 +89,26 @@ Test the lock system with the predefined password, verify LED indicators, and ex
 
 ## Main Program Flowchart
 
-![flowchart](flowchart.pdf)
+### Open Door Flowchart
+
+![Open Door](Open.png)
+
+### Set New PC Flowchart
+
+![Set New PC](SetPC.jpg)
+
+### Admin Sittings Flowchart
+
+![Admin Sittings](Admin.jpg)
 
 ## Developers
 
-- Eslam AbdElhady
-- Ahmed Hesham
-- Elsherif Shapan
-- Hussein AbdElkader
-- Enas Ragap
-- Mariam Tarek
+- Islam AbdElhady Hassanein
+- Ahmed Hesham Fathall Farag
+- Elsherif Shapan Abdelmageed
+- Hussein AbdElkader Hussein
+- Enas Ragab AbdEllatif
+- Mariam Tarek Saad
 
 ## Main Function
 
@@ -113,31 +117,39 @@ Test the lock system with the predefined password, verify LED indicators, and ex
 ```c
 /*
  * Project #1 lock system.c
+ *
  * Created: 12/16/2023 1:47:34 AM
+ * Author: Hos10
  */
 
 #include "lockSys.h"
 
 void main(void)
 {
-    // Initialize Hardware
+	char input;
+
+	// Initialize Hardware
 	initializeHardware();
 
 	// Initialize user data in EEPROM
 	initializeUsers();
 
-    // Initialize interrupts for various modes
+	// Initialize interrupts for various modes
 	initializeIntrrupts();
+
+    // If user need to open the door must press '*' on the keypad
+	while (1)
+		{
+		input = keypad();
+		if (input != '*')
+			continue;
+		openCloseDoorMode();
+		}
 }
 
 interrupt[3] void setPC(void) //  vector no 3 -> INT1
 {
 	setPCMode();
-}
-
-interrupt[19] void openCloseDoor(void) // vector no 19 -> INT2
-{
-	openCloseDoorMode();
 }
 
 interrupt[2] void admin(void) // vector no 2 -> INT0
@@ -435,13 +447,11 @@ int enterValueWithKeypad(char *buffer)
 // Function to generate a tone with speaker
 void generateTone()
 {
-	// Set PD7 HIGH to generate the tone
 	PORTD .7 = 1;
-
 	delay_ms(500);
-
-	// Set PD7 LOW to stop the tone
 	PORTD .7 = 0;
+    delay_ms(500);
+    PORTD .7 = 1;
 }
 
 // Interrupt functions

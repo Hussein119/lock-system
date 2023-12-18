@@ -9,24 +9,30 @@
 
 void main(void)
 {
-    // Initialize Hardware
+	char input;
+
+	// Initialize Hardware
 	initializeHardware();
 
 	// Initialize user data in EEPROM
 	initializeUsers();
-    
-    // Initialize interrupts for various modes
+
+	// Initialize interrupts for various modes
 	initializeIntrrupts();
+    
+    // If user need to open the door must press '*' on the keypad
+	while (1)
+		{
+		input = keypad();
+		if (input != '*')
+			continue;
+		openCloseDoorMode();
+		}
 }
 
 interrupt[3] void setPC(void) //  vector no 3 -> INT1
 {
 	setPCMode();
-}
-
-interrupt[19] void openCloseDoor(void) // vector no 19 -> INT2
-{
-	openCloseDoorMode();
 }
 
 interrupt[2] void admin(void) // vector no 2 -> INT0

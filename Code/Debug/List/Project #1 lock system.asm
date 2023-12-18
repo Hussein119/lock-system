@@ -1517,87 +1517,87 @@ __GLOBAL_INI_TBL:
 	.DW  _0x3*2
 
 	.DW  0x05
-	.DW  _0x84
+	.DW  _0x86
 	.DW  _0x0*2
 
 	.DW  0x11
-	.DW  _0x84+5
+	.DW  _0x86+5
 	.DW  _0x0*2+5
 
 	.DW  0x13
-	.DW  _0x84+22
+	.DW  _0x86+22
 	.DW  _0x0*2+22
 
 	.DW  0x19
-	.DW  _0x84+41
+	.DW  _0x86+41
 	.DW  _0x0*2+41
 
 	.DW  0x15
-	.DW  _0x84+66
+	.DW  _0x86+66
 	.DW  _0x0*2+66
 
 	.DW  0x14
-	.DW  _0x84+87
+	.DW  _0x86+87
 	.DW  _0x0*2+87
 
 	.DW  0x12
-	.DW  _0x84+107
+	.DW  _0x86+107
 	.DW  _0x0*2+107
 
 	.DW  0x0E
-	.DW  _0x84+125
+	.DW  _0x86+125
 	.DW  _0x0*2+125
 
 	.DW  0x0F
-	.DW  _0x91
+	.DW  _0x93
 	.DW  _0x0*2+139
 
 	.DW  0x0E
-	.DW  _0x91+15
+	.DW  _0x93+15
 	.DW  _0x0*2+154
 
 	.DW  0x0E
-	.DW  _0x91+29
+	.DW  _0x93+29
 	.DW  _0x0*2+168
 
 	.DW  0x11
-	.DW  _0x91+43
+	.DW  _0x93+43
 	.DW  _0x0*2+182
 
 	.DW  0x0E
-	.DW  _0x91+60
+	.DW  _0x93+60
 	.DW  _0x0*2+199
 
 	.DW  0x1F
-	.DW  _0x91+74
+	.DW  _0x93+74
 	.DW  _0x0*2+213
 
 	.DW  0x1E
-	.DW  _0x91+105
+	.DW  _0x93+105
 	.DW  _0x0*2+244
 
 	.DW  0x09
-	.DW  _0x91+135
+	.DW  _0x93+135
 	.DW  _0x0*2+274
 
 	.DW  0x10
-	.DW  _0x9D
+	.DW  _0x9F
 	.DW  _0x0*2+283
 
 	.DW  0x10
-	.DW  _0x9D+16
+	.DW  _0x9F+16
 	.DW  _0x0*2+299
 
 	.DW  0x0A
-	.DW  _0x9D+32
+	.DW  _0x9F+32
 	.DW  _0x0*2+315
 
 	.DW  0x0F
-	.DW  _0x9D+42
+	.DW  _0x9F+42
 	.DW  _0x0*2+325
 
 	.DW  0x09
-	.DW  _0x9D+57
+	.DW  _0x9F+57
 	.DW  _0x0*2+274
 
 	.DW  0x02
@@ -1723,8 +1723,7 @@ _initializeDoor:
 _initializeSpeaker:
 ; .FSTART _initializeSpeaker
 	SBI  0x11,7
-	SBI  0x12,7
-	RET
+	RJMP _0x2080003
 ; .FEND
 _initializeIntrrupts:
 ; .FSTART _initializeIntrrupts
@@ -1886,7 +1885,7 @@ _0x66:
 	__OUTWR 16,17,30
 	SBI  0x1C,0
 	IN   R30,0x1D
-	RJMP _0x2080003
+	RJMP _0x2080004
 ; .FEND
 _EE_Write:
 ; .FSTART _EE_Write
@@ -1902,7 +1901,7 @@ _0x6B:
 	OUT  0x1D,R17
 	SBI  0x1C,2
 	SBI  0x1C,1
-	RJMP _0x2080004
+	RJMP _0x2080005
 ; .FEND
 _EE_WriteString:
 ; .FSTART _EE_WriteString
@@ -1927,7 +1926,7 @@ _0x74:
 	ST   -Y,R18
 	LDI  R26,LOW(0)
 	RCALL _EE_Write
-	RJMP _0x2080004
+	RJMP _0x2080005
 ; .FEND
 _EE_ReadString:
 ; .FSTART _EE_ReadString
@@ -2004,7 +2003,7 @@ _displayMessage:
 	RCALL _lcd_puts
 	MOVW R26,R16
 	RCALL _delay_ms
-_0x2080004:
+_0x2080005:
 	RCALL __LOADLOCR4
 	ADIW R28,6
 	RET
@@ -2042,7 +2041,7 @@ _enterValueWithKeypad:
 	RCALL _delay_ms
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
-_0x2080003:
+_0x2080004:
 	LD   R16,Y+
 	LD   R17,Y+
 	RET
@@ -2054,6 +2053,11 @@ _generateTone:
 	LDI  R27,HIGH(500)
 	RCALL _delay_ms
 	CBI  0x12,7
+	LDI  R26,LOW(500)
+	LDI  R27,HIGH(500)
+	RCALL _delay_ms
+_0x2080003:
+	SBI  0x12,7
 	RET
 ; .FEND
 _adminMode:
@@ -2074,11 +2078,11 @@ _adminMode:
 	LDI  R30,LOW(0)
 	STD  Y+6,R30
 	STD  Y+6+1,R30
-_0x81:
+_0x83:
 	LDD  R26,Y+6
 	LDD  R27,Y+6+1
 	SBIW R26,5
-	BRGE _0x82
+	BRGE _0x84
 	ST   -Y,R19
 	ST   -Y,R18
 	MOVW R30,R28
@@ -2088,10 +2092,10 @@ _0x81:
 	ADIW R30,8
 	ST   -Y,R31
 	ST   -Y,R30
-	__POINTW2MN _0x84,0
+	__POINTW2MN _0x86,0
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0x83
+	BRNE _0x85
 	RCALL SUBOPT_0x5
 	RCALL SUBOPT_0x6
 	RCALL SUBOPT_0x7
@@ -2102,18 +2106,18 @@ _0x81:
 	LDI  R27,0
 	RCALL _EE_ReadString
 	MOVW R16,R18
-	RJMP _0x82
-_0x83:
+	RJMP _0x84
+_0x85:
 	__ADDWRN 18,19,4
 	LDD  R30,Y+6
 	LDD  R31,Y+6+1
 	ADIW R30,1
 	STD  Y+6,R30
 	STD  Y+6+1,R31
-	RJMP _0x81
-_0x82:
+	RJMP _0x83
+_0x84:
 	__GETWRN 18,19,0
-	__POINTW1MN _0x84,5
+	__POINTW1MN _0x86,5
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	MOVW R26,R28
@@ -2121,21 +2125,21 @@ _0x82:
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
 	BRNE PC+2
-	RJMP _0x85
+	RJMP _0x87
 	RCALL SUBOPT_0xB
 	MOVW R26,R28
 	ADIW R26,46
 	RCALL _strcmp
 	CPI  R30,0
 	BREQ PC+2
-	RJMP _0x86
-	__POINTW1MN _0x84,22
+	RJMP _0x88
+	__POINTW1MN _0x86,22
 	RCALL SUBOPT_0x9
 	MOVW R26,R28
 	ADIW R26,40
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
-	BREQ _0x87
+	BREQ _0x89
 	SBIW R28,2
 ;	enteredPC -> Y+46
 ;	enteredStudentID -> Y+42
@@ -2147,11 +2151,11 @@ _0x82:
 	LDI  R30,LOW(0)
 	STD  Y+0,R30
 	STD  Y+0+1,R30
-_0x89:
+_0x8B:
 	LD   R26,Y
 	LDD  R27,Y+1
 	SBIW R26,5
-	BRGE _0x8A
+	BRGE _0x8C
 	RCALL SUBOPT_0x5
 	MOVW R30,R28
 	ADIW R30,32
@@ -2163,57 +2167,57 @@ _0x89:
 	ST   -Y,R31
 	ST   -Y,R30
 	RCALL SUBOPT_0xC
-	BRNE _0x8B
-	__POINTW1MN _0x84,41
+	BRNE _0x8D
+	__POINTW1MN _0x86,41
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xD
-	BREQ _0x8C
+	BREQ _0x8E
 	ST   -Y,R19
 	ST   -Y,R18
 	MOVW R26,R28
 	ADIW R26,40
 	RCALL _EE_WriteString
-	__POINTW1MN _0x84,66
+	__POINTW1MN _0x86,66
 	RCALL SUBOPT_0xE
-	RJMP _0x8A
-_0x8C:
-	RJMP _0x8D
-_0x8B:
+	RJMP _0x8C
+_0x8E:
+	RJMP _0x8F
+_0x8D:
 	RCALL SUBOPT_0x6
 	RCALL SUBOPT_0xC
-	BRNE _0x8E
-	__POINTW1MN _0x84,87
+	BRNE _0x90
+	__POINTW1MN _0x86,87
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	RCALL SUBOPT_0xD
-	BREQ _0x8F
+	BREQ _0x91
 	ST   -Y,R17
 	ST   -Y,R16
 	MOVW R26,R28
 	ADIW R26,40
 	RCALL _EE_WriteString
-	__POINTW1MN _0x84,107
+	__POINTW1MN _0x86,107
 	RCALL SUBOPT_0xE
-	RJMP _0x8A
+	RJMP _0x8C
+_0x91:
+_0x90:
 _0x8F:
-_0x8E:
-_0x8D:
 	__ADDWRN 18,19,4
 	LD   R30,Y
 	LDD  R31,Y+1
 	ADIW R30,1
 	ST   Y,R30
 	STD  Y+1,R31
-	RJMP _0x89
-_0x8A:
+	RJMP _0x8B
+_0x8C:
 	ADIW R28,2
+_0x89:
+_0x88:
 _0x87:
-_0x86:
-_0x85:
 	MOV  R0,R20
 	OR   R0,R21
-	BRNE _0x90
-	__POINTW1MN _0x84,125
+	BRNE _0x92
+	__POINTW1MN _0x86,125
 	ST   -Y,R31
 	ST   -Y,R30
 	LDI  R26,LOW(3000)
@@ -2221,7 +2225,7 @@ _0x85:
 	RCALL _displayMessage
 	RCALL _generateTone
 	RCALL _generateTone
-_0x90:
+_0x92:
 	RCALL SUBOPT_0xF
 	RCALL __LOADLOCR6
 	ADIW R28,48
@@ -2229,7 +2233,7 @@ _0x90:
 ; .FEND
 
 	.DSEG
-_0x84:
+_0x86:
 	.BYTE 0x8B
 
 	.CSEG
@@ -2246,7 +2250,7 @@ _setPCMode:
 ;	reenteredNewPC -> Y+6
 	RCALL SUBOPT_0x1
 	RCALL _lcd_clear
-	__POINTW1MN _0x91,0
+	__POINTW1MN _0x93,0
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	MOVW R26,R28
@@ -2254,7 +2258,7 @@ _setPCMode:
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
 	BRNE PC+2
-	RJMP _0x92
+	RJMP _0x94
 	SBIW R28,5
 ;	enteredID -> Y+35
 ;	currentUser -> Y+21
@@ -2262,10 +2266,10 @@ _setPCMode:
 ;	reenteredNewPC -> Y+11
 ;	enteredOldPC -> Y+0
 	__GETWRN 20,21,0
-_0x94:
+_0x96:
 	__CPWRN 20,21,5
 	BRLT PC+2
-	RJMP _0x95
+	RJMP _0x97
 	RCALL SUBOPT_0x10
 	MOVW R30,R28
 	ADIW R30,29
@@ -2278,30 +2282,30 @@ _0x94:
 	ADIW R26,37
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0x96
+	BRNE _0x98
 	RCALL SUBOPT_0x12
 	MOVW R30,R28
 	ADIW R30,33
 	RCALL SUBOPT_0x11
-	__POINTW1MN _0x91,15
+	__POINTW1MN _0x93,15
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	RCALL SUBOPT_0x13
-	BREQ _0x97
+	BREQ _0x99
 	MOVW R30,R28
 	ADIW R30,31
 	ST   -Y,R31
 	ST   -Y,R30
 	RCALL SUBOPT_0x14
-	BRNE _0x98
-	__POINTW1MN _0x91,29
+	BRNE _0x9A
+	__POINTW1MN _0x93,29
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	MOVW R26,R28
 	ADIW R26,16
 	RCALL _enterValueWithKeypad
 	RCALL _lcd_clear
-	__POINTW1MN _0x91,43
+	__POINTW1MN _0x93,43
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	MOVW R26,R28
@@ -2312,54 +2316,54 @@ _0x94:
 	ADIW R26,13
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0x99
+	BRNE _0x9B
 	ST   -Y,R17
 	ST   -Y,R16
 	MOVW R26,R28
 	ADIW R26,18
 	RCALL _EE_WriteString
-	__POINTW1MN _0x91,60
+	__POINTW1MN _0x93,60
 	RCALL SUBOPT_0x9
-	RJMP _0x9A
-_0x99:
-	__POINTW1MN _0x91,74
-	RCALL SUBOPT_0x9
-	RCALL _generateTone
-	RCALL _generateTone
-_0x9A:
-	RJMP _0x9B
-_0x98:
-	__POINTW1MN _0x91,105
-	RCALL SUBOPT_0x9
-	RCALL _generateTone
-	RCALL _generateTone
+	RJMP _0x9C
 _0x9B:
-_0x97:
-	__GETWRN 18,19,1
-	RJMP _0x95
-_0x96:
-	RCALL SUBOPT_0x15
-	__ADDWRN 20,21,1
-	RJMP _0x94
-_0x95:
-	MOV  R0,R18
-	OR   R0,R19
-	BRNE _0x9C
-	__POINTW1MN _0x91,135
+	__POINTW1MN _0x93,74
 	RCALL SUBOPT_0x9
 	RCALL _generateTone
 	RCALL _generateTone
 _0x9C:
+	RJMP _0x9D
+_0x9A:
+	__POINTW1MN _0x93,105
+	RCALL SUBOPT_0x9
+	RCALL _generateTone
+	RCALL _generateTone
+_0x9D:
+_0x99:
+	__GETWRN 18,19,1
+	RJMP _0x97
+_0x98:
+	RCALL SUBOPT_0x15
+	__ADDWRN 20,21,1
+	RJMP _0x96
+_0x97:
+	MOV  R0,R18
+	OR   R0,R19
+	BRNE _0x9E
+	__POINTW1MN _0x93,135
+	RCALL SUBOPT_0x9
+	RCALL _generateTone
+	RCALL _generateTone
+_0x9E:
 	RCALL SUBOPT_0xF
 	ADIW R28,5
-_0x92:
+_0x94:
 	RCALL __LOADLOCR6
 	ADIW R28,35
 	RET
 ; .FEND
 
 	.DSEG
-_0x91:
+_0x93:
 	.BYTE 0x90
 
 	.CSEG
@@ -2373,22 +2377,22 @@ _openCloseDoorMode:
 ;	userFound -> R18,R19
 ;	i -> R20,R21
 	RCALL SUBOPT_0x1
-	__POINTW1MN _0x9D,0
+	__POINTW1MN _0x9F,0
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	MOVW R26,R28
 	ADIW R26,20
 	RCALL _enterValueWithKeypad
 	SBIW R30,0
-	BREQ _0x9E
+	BREQ _0xA0
 	SBIW R28,4
 ;	enteredID -> Y+24
 ;	currentUser -> Y+10
 ;	enteredPC -> Y+0
 	__GETWRN 20,21,0
-_0xA0:
+_0xA2:
 	__CPWRN 20,21,5
-	BRGE _0xA1
+	BRGE _0xA3
 	ST   -Y,R17
 	ST   -Y,R16
 	MOVW R30,R28
@@ -2404,50 +2408,50 @@ _0xA0:
 	ADIW R26,26
 	RCALL _strcmp
 	CPI  R30,0
-	BRNE _0xA2
+	BRNE _0xA4
 	RCALL SUBOPT_0x12
 	MOVW R30,R28
 	ADIW R30,22
 	RCALL SUBOPT_0x11
-	__POINTW1MN _0x9D,16
+	__POINTW1MN _0x9F,16
 	RCALL SUBOPT_0x9
 	RCALL SUBOPT_0xA
 	RCALL SUBOPT_0x13
-	BREQ _0xA3
+	BREQ _0xA5
 	RCALL SUBOPT_0x8
 	RCALL SUBOPT_0x14
-	BRNE _0xA4
+	BRNE _0xA6
 	RCALL _lcd_clear
-	__POINTW2MN _0x9D,32
+	__POINTW2MN _0x9F,32
 	RCALL _lcd_puts
 	MOVW R26,R28
 	ADIW R26,10
 	RCALL _lcd_puts
 	SBI  0x17,0
-	RJMP _0xA7
-_0xA4:
-	__POINTW1MN _0x9D,42
+	RJMP _0xA9
+_0xA6:
+	__POINTW1MN _0x9F,42
 	RCALL SUBOPT_0x9
 	RCALL _generateTone
-_0xA7:
-_0xA3:
+_0xA9:
+_0xA5:
 	__GETWRN 18,19,1
-	RJMP _0xA1
-_0xA2:
+	RJMP _0xA3
+_0xA4:
 	RCALL SUBOPT_0x15
 	__ADDWRN 20,21,1
-	RJMP _0xA0
-_0xA1:
+	RJMP _0xA2
+_0xA3:
 	ADIW R28,4
-_0x9E:
+_0xA0:
 	MOV  R0,R18
 	OR   R0,R19
-	BRNE _0xA8
-	__POINTW1MN _0x9D,57
+	BRNE _0xAA
+	__POINTW1MN _0x9F,57
 	RCALL SUBOPT_0x9
 	RCALL _generateTone
 	RCALL _generateTone
-_0xA8:
+_0xAA:
 	LDI  R26,LOW(5000)
 	LDI  R27,HIGH(5000)
 	RCALL _delay_ms
@@ -2459,7 +2463,7 @@ _0xA8:
 ; .FEND
 
 	.DSEG
-_0x9D:
+_0x9F:
 	.BYTE 0x42
 ;void main(void)
 ; 0000 000B {
@@ -2467,50 +2471,68 @@ _0x9D:
 	.CSEG
 _main:
 ; .FSTART _main
-; 0000 000C // Initialize Hardware
-; 0000 000D initializeHardware();
+; 0000 000C char input;
+; 0000 000D 
+; 0000 000E // Initialize Hardware
+; 0000 000F initializeHardware();
+;	input -> R17
 	RCALL _initializeHardware
-; 0000 000E 
-; 0000 000F // Initialize user data in EEPROM
-; 0000 0010 initializeUsers();
+; 0000 0010 
+; 0000 0011 // Initialize user data in EEPROM
+; 0000 0012 initializeUsers();
 	RCALL _initializeUsers
-; 0000 0011 
-; 0000 0012 // Initialize interrupts for various modes
-; 0000 0013 initializeIntrrupts();
+; 0000 0013 
+; 0000 0014 // Initialize interrupts for various modes
+; 0000 0015 initializeIntrrupts();
 	RCALL _initializeIntrrupts
-; 0000 0014 }
-_0xAB:
-	RJMP _0xAB
+; 0000 0016 
+; 0000 0017 while (1)
+_0xAD:
+; 0000 0018 {
+; 0000 0019 input = keypad();
+	RCALL _keypad
+	MOV  R17,R30
+; 0000 001A if (input != '*')
+	CPI  R17,42
+	BRNE _0xAD
+; 0000 001B continue;
+; 0000 001C openCloseDoorMode();
+	RCALL _openCloseDoorMode
+; 0000 001D }
+	RJMP _0xAD
+; 0000 001E }
+_0xB1:
+	RJMP _0xB1
 ; .FEND
 ;interrupt[3] void setPC(void)
-; 0000 0017 {
+; 0000 0021 {
 _setPC:
 ; .FSTART _setPC
 	RCALL SUBOPT_0x16
-; 0000 0018 setPCMode();
+; 0000 0022 setPCMode();
 	RCALL _setPCMode
-; 0000 0019 }
-	RJMP _0xAC
+; 0000 0023 }
+	RJMP _0xB2
 ; .FEND
 ;interrupt[19] void openCloseDoor(void)
-; 0000 001C {
+; 0000 0026 {
 _openCloseDoor:
 ; .FSTART _openCloseDoor
 	RCALL SUBOPT_0x16
-; 0000 001D openCloseDoorMode();
+; 0000 0027 openCloseDoorMode();
 	RCALL _openCloseDoorMode
-; 0000 001E }
-	RJMP _0xAC
+; 0000 0028 }
+	RJMP _0xB2
 ; .FEND
 ;interrupt[2] void admin(void)
-; 0000 0021 {
+; 0000 002B {
 _admin:
 ; .FSTART _admin
 	RCALL SUBOPT_0x16
-; 0000 0022 adminMode();
+; 0000 002C adminMode();
 	RCALL _adminMode
-; 0000 0023 }
-_0xAC:
+; 0000 002D }
+_0xB2:
 	LD   R30,Y+
 	OUT  SREG,R30
 	LD   R31,Y+

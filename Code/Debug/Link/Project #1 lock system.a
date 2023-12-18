@@ -499,6 +499,10 @@
 ;PCODE: $000001D5 VOL: 0
 ;PCODE: $000001D6 VOL: 0
 ;PCODE: $000001D7 VOL: 0
+;PCODE: $000001D8 VOL: 0
+;PCODE: $000001D9 VOL: 0
+;PCODE: $000001DA VOL: 0
+;PCODE: $000001DB VOL: 0
 ;	enteredPC -> Y+44
 ;	enteredStudentID -> Y+40
 ;	enteredNewPC -> Y+36
@@ -508,10 +512,6 @@
 ;	address -> R18,R19
 ;	userFound -> R20,R21
 ;	i -> Y+6
-;PCODE: $000001D8 VOL: 0
-;PCODE: $000001D9 VOL: 0
-;PCODE: $000001DA VOL: 0
-;PCODE: $000001DB VOL: 0
 ;PCODE: $000001DC VOL: 0
 ;PCODE: $000001DD VOL: 0
 ;PCODE: $000001DE VOL: 0
@@ -596,6 +596,10 @@
 ;PCODE: $0000022D VOL: 0
 ;PCODE: $0000022E VOL: 0
 ;PCODE: $0000022F VOL: 0
+;PCODE: $00000230 VOL: 0
+;PCODE: $00000231 VOL: 0
+;PCODE: $00000232 VOL: 0
+;PCODE: $00000233 VOL: 0
 ;	enteredPC -> Y+46
 ;	enteredStudentID -> Y+42
 ;	enteredNewPC -> Y+38
@@ -603,10 +607,6 @@
 ;	admin -> Y+10
 ;	i -> Y+8
 ;	j -> Y+0
-;PCODE: $00000230 VOL: 0
-;PCODE: $00000231 VOL: 0
-;PCODE: $00000232 VOL: 0
-;PCODE: $00000233 VOL: 0
 ;PCODE: $00000234 VOL: 0
 ;PCODE: $00000235 VOL: 0
 ;PCODE: $00000236 VOL: 0
@@ -714,16 +714,20 @@
 ;PCODE: $0000029C VOL: 0
 ;PCODE: $0000029D VOL: 0
 ;PCODE: $0000029E VOL: 0
-
-	.DSEG
-_0x84:
-	.BYTE 0x8B
-
-	.CSEG
 ;PCODE: $0000029F VOL: 0
 ;PCODE: $000002A0 VOL: 0
 ;PCODE: $000002A1 VOL: 0
 ;PCODE: $000002A2 VOL: 0
+
+	.DSEG
+_0x86:
+	.BYTE 0x8B
+
+	.CSEG
+;PCODE: $000002A3 VOL: 0
+;PCODE: $000002A4 VOL: 0
+;PCODE: $000002A5 VOL: 0
+;PCODE: $000002A6 VOL: 0
 ;	enteredID -> Y+30
 ;	currentUser -> Y+16
 ;	address -> R16,R17
@@ -731,10 +735,6 @@ _0x84:
 ;	i -> R20,R21
 ;	enteredNewPC -> Y+11
 ;	reenteredNewPC -> Y+6
-;PCODE: $000002A3 VOL: 0
-;PCODE: $000002A4 VOL: 0
-;PCODE: $000002A5 VOL: 0
-;PCODE: $000002A6 VOL: 0
 ;PCODE: $000002A7 VOL: 0
 ;PCODE: $000002A8 VOL: 0
 ;PCODE: $000002A9 VOL: 0
@@ -750,15 +750,15 @@ _0x84:
 ;PCODE: $000002B3 VOL: 0
 ;PCODE: $000002B4 VOL: 0
 ;PCODE: $000002B5 VOL: 0
+;PCODE: $000002B6 VOL: 0
+;PCODE: $000002B7 VOL: 0
+;PCODE: $000002B8 VOL: 0
+;PCODE: $000002B9 VOL: 0
 ;	enteredID -> Y+35
 ;	currentUser -> Y+21
 ;	enteredNewPC -> Y+16
 ;	reenteredNewPC -> Y+11
 ;	enteredOldPC -> Y+0
-;PCODE: $000002B6 VOL: 0
-;PCODE: $000002B7 VOL: 0
-;PCODE: $000002B8 VOL: 0
-;PCODE: $000002B9 VOL: 0
 ;PCODE: $000002BA VOL: 0
 ;PCODE: $000002BB VOL: 0
 ;PCODE: $000002BC VOL: 0
@@ -895,25 +895,25 @@ _0x84:
 ;PCODE: $0000033F VOL: 0
 ;PCODE: $00000340 VOL: 0
 ;PCODE: $00000341 VOL: 0
-
-	.DSEG
-_0x91:
-	.BYTE 0x90
-
-	.CSEG
 ;PCODE: $00000342 VOL: 0
 ;PCODE: $00000343 VOL: 0
 ;PCODE: $00000344 VOL: 0
 ;PCODE: $00000345 VOL: 0
+
+	.DSEG
+_0x93:
+	.BYTE 0x90
+
+	.CSEG
+;PCODE: $00000346 VOL: 0
+;PCODE: $00000347 VOL: 0
+;PCODE: $00000348 VOL: 0
+;PCODE: $00000349 VOL: 0
 ;	enteredID -> Y+20
 ;	currentUser -> Y+6
 ;	address -> R16,R17
 ;	userFound -> R18,R19
 ;	i -> R20,R21
-;PCODE: $00000346 VOL: 0
-;PCODE: $00000347 VOL: 0
-;PCODE: $00000348 VOL: 0
-;PCODE: $00000349 VOL: 0
 ;PCODE: $0000034A VOL: 0
 ;PCODE: $0000034B VOL: 0
 ;PCODE: $0000034C VOL: 0
@@ -928,13 +928,13 @@ _0x91:
 ;PCODE: $00000355 VOL: 0
 ;PCODE: $00000356 VOL: 0
 ;PCODE: $00000357 VOL: 0
-;	enteredID -> Y+24
-;	currentUser -> Y+10
-;	enteredPC -> Y+0
 ;PCODE: $00000358 VOL: 0
 ;PCODE: $00000359 VOL: 0
 ;PCODE: $0000035A VOL: 0
 ;PCODE: $0000035B VOL: 0
+;	enteredID -> Y+24
+;	currentUser -> Y+10
+;	enteredPC -> Y+0
 ;PCODE: $0000035C VOL: 0
 ;PCODE: $0000035D VOL: 0
 ;PCODE: $0000035E VOL: 0
@@ -1039,57 +1039,83 @@ _0x91:
 ;PCODE: $000003C1 VOL: 0
 ;PCODE: $000003C2 VOL: 0
 ;PCODE: $000003C3 VOL: 0
+;PCODE: $000003C4 VOL: 0
+;PCODE: $000003C5 VOL: 0
+;PCODE: $000003C6 VOL: 0
+;PCODE: $000003C7 VOL: 0
 
 	.DSEG
-_0x9D:
+_0x9F:
 	.BYTE 0x42
 ;void main(void)
 ; 0000 000B {
 
 	.CSEG
-;PCODE: $000003C4 VOL: 0
-; 0000 000C // Initialize Hardware
-; 0000 000D initializeHardware();
-;PCODE: $000003C5 VOL: 0
-; 0000 000E 
-; 0000 000F // Initialize user data in EEPROM
-; 0000 0010 initializeUsers();
-;PCODE: $000003C6 VOL: 0
-; 0000 0011 
-; 0000 0012 // Initialize interrupts for various modes
-; 0000 0013 initializeIntrrupts();
-;PCODE: $000003C7 VOL: 0
-; 0000 0014 }
 ;PCODE: $000003C8 VOL: 0
+; 0000 000C char input;
+; 0000 000D 
+; 0000 000E // Initialize Hardware
+; 0000 000F initializeHardware();
+;	input -> R17
 ;PCODE: $000003C9 VOL: 0
+; 0000 0010 
+; 0000 0011 // Initialize user data in EEPROM
+; 0000 0012 initializeUsers();
 ;PCODE: $000003CA VOL: 0
-;interrupt[3] void setPC(void)
-; 0000 0017 {
+; 0000 0013 
+; 0000 0014 // Initialize interrupts for various modes
+; 0000 0015 initializeIntrrupts();
 ;PCODE: $000003CB VOL: 0
+; 0000 0016 
+; 0000 0017 while (1)
 ;PCODE: $000003CC VOL: 0
-; 0000 0018 setPCMode();
+; 0000 0018 {
+; 0000 0019 input = keypad();
 ;PCODE: $000003CD VOL: 0
-; 0000 0019 }
 ;PCODE: $000003CE VOL: 0
+; 0000 001A if (input != '*')
 ;PCODE: $000003CF VOL: 0
 ;PCODE: $000003D0 VOL: 0
-;interrupt[19] void openCloseDoor(void)
-; 0000 001C {
 ;PCODE: $000003D1 VOL: 0
+; 0000 001B continue;
 ;PCODE: $000003D2 VOL: 0
-; 0000 001D openCloseDoorMode();
+; 0000 001C openCloseDoorMode();
 ;PCODE: $000003D3 VOL: 0
-; 0000 001E }
 ;PCODE: $000003D4 VOL: 0
+; 0000 001D }
 ;PCODE: $000003D5 VOL: 0
 ;PCODE: $000003D6 VOL: 0
-;interrupt[2] void admin(void)
-; 0000 0021 {
+; 0000 001E }
 ;PCODE: $000003D7 VOL: 0
 ;PCODE: $000003D8 VOL: 0
-; 0000 0022 adminMode();
 ;PCODE: $000003D9 VOL: 0
-; 0000 0023 }
+;interrupt[3] void setPC(void)
+; 0000 0021 {
 ;PCODE: $000003DA VOL: 0
 ;PCODE: $000003DB VOL: 0
+; 0000 0022 setPCMode();
 ;PCODE: $000003DC VOL: 0
+; 0000 0023 }
+;PCODE: $000003DD VOL: 0
+;PCODE: $000003DE VOL: 0
+;PCODE: $000003DF VOL: 0
+;interrupt[19] void openCloseDoor(void)
+; 0000 0026 {
+;PCODE: $000003E0 VOL: 0
+;PCODE: $000003E1 VOL: 0
+; 0000 0027 openCloseDoorMode();
+;PCODE: $000003E2 VOL: 0
+; 0000 0028 }
+;PCODE: $000003E3 VOL: 0
+;PCODE: $000003E4 VOL: 0
+;PCODE: $000003E5 VOL: 0
+;interrupt[2] void admin(void)
+; 0000 002B {
+;PCODE: $000003E6 VOL: 0
+;PCODE: $000003E7 VOL: 0
+; 0000 002C adminMode();
+;PCODE: $000003E8 VOL: 0
+; 0000 002D }
+;PCODE: $000003E9 VOL: 0
+;PCODE: $000003EA VOL: 0
+;PCODE: $000003EB VOL: 0

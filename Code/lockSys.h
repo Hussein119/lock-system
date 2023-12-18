@@ -35,7 +35,7 @@ typedef struct
 } User;
 // Array of user data
 User users[] =
-	{
+{
 		// name  ID   PC
 		{"Prof", "111", "203"},
 		{"Ahmed", "126", "129"},
@@ -284,13 +284,11 @@ int enterValueWithKeypad(char *buffer)
 // Function to generate a tone with speaker
 void generateTone()
 {
-	// Set PD7 HIGH to generate the tone
 	PORTD .7 = 1;
-
 	delay_ms(500);
-
-	// Set PD7 LOW to stop the tone
 	PORTD .7 = 0;
+    delay_ms(500);
+    PORTD .7 = 1;
 }
 
 // Interrupt functions

@@ -284,14 +284,11 @@ int enterValueWithKeypad(char *buffer)
 // Function to generate a tone with speaker
 void generateTone()
 {
-	// Set PD7 HIGH to generate the tone
 	PORTD .7 = 1;
-
-	// Adjust the duration of the tone as needed
 	delay_ms(500);
-
-	// Set PD7 LOW to stop the tone
 	PORTD .7 = 0;
+    delay_ms(500);
+    PORTD .7 = 1;
 }
 
 // Interrupt functions
