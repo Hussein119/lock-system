@@ -188,8 +188,8 @@ typedef struct
 } User;
 // Array of user data
 User users[] =
-	{
-		// name  ID   PC
+{
+		// name   ID     PC
 		{"Prof", "111", "203"},
 		{"Ahmed", "126", "129"},
 		{"Amr", "128", "325"},
