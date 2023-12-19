@@ -1,6 +1,5 @@
 #include <mega16.h>
-// #include <alcd.h>
-#include <lcd_library.h>
+#include <alcd.h>
 #include <delay.h>
 #include <string.h>
 
@@ -23,6 +22,8 @@ void initializeUsers();
 void displayMessage(char *message, int delay_ms_value);
 int enterValueWithKeypad(char *buffer);
 void generateTone();
+void openDoor();
+void closeDoor();
 void adminMode();
 void setPCMode();
 void openCloseDoorMode();
@@ -65,9 +66,10 @@ void initializeKeypad()
 // Function to initialize door
 void initializeDoor()
 {
-	// Set the door as input (by default, the door is closed)
-	DDRB .0 = 0;
-	PORTB .0 = 1; // turn on pull-up resistance
+	// Set the motor pins as output
+	DDRB |= (1 << DDB3) | (1 << DDB4);
+	// Set the red LED pin as output
+	DDRB |= (1 << DDB0);
 }
 
 // Function to initialize speaker
@@ -144,7 +146,7 @@ char keypad()
 			case 0b10111110:
 				while (PINC .6 == 0)
 					;
-				return '*';
+				return 10;
 			}
 
 		PORTC .0 = 1;
@@ -192,7 +194,7 @@ char keypad()
 			case 0b10111011:
 				while (PINC .6 == 0)
 					;
-				return '#';
+				return 11;
 			}
 		}
 }
@@ -262,24 +264,48 @@ void initializeUsers()
 void displayMessage(char *message, int delay_ms_value)
 {
 	lcd_clear();
-    lcd_puts(message);
+	lcd_puts(message);
 	delay_ms(delay_ms_value);
 }
 
 // Function to enter a value with the keypad
+
 int enterValueWithKeypad(char *buffer)
 {
-	buffer[0] = keypad() + '0';
-	lcd_putchar(buffer[0]);
-	buffer[1] = keypad() + '0';
-	lcd_putchar(buffer[1]);
-	buffer[2] = keypad() + '0';
-	lcd_putchar(buffer[2]);
-	buffer[3] = '\0'; // Null-terminate the string
+	int buffer2[3];
+
+	buffer2[0] = keypad();
+	if (buffer2[0] == 10)
+		lcd_putchar('*');
+	else if (buffer2[0] == 11)
+		lcd_putchar('#');
+	else
+		lcd_putchar(buffer2[0] + '0');
+
+	buffer2[1] = keypad();
+	if (buffer2[1] == 10)
+		lcd_putchar('*');
+	else if (buffer2[1] == 11)
+		lcd_putchar('#');
+	else
+		lcd_putchar(buffer2[1] + '0');
+
+	buffer2[2] = keypad();
+	if (buffer2[2] == 10)
+		lcd_putchar('*');
+	else if (buffer2[2] == 11)
+		lcd_putchar('#');
+	else
+		lcd_putchar(buffer2[2] + '0');
+
+	buffer[0] = buffer2[0] + '0';
+	buffer[1] = buffer2[1] + '0';
+	buffer[2] = buffer2[2] + '0';
+	buffer[3] = '\0';
 
 	delay_ms(1000);
 
-	return 1; // Return a non-zero value to indicate success
+	return 1;
 }
 
 // Function to generate a tone with speaker
@@ -290,6 +316,38 @@ void generateTone()
 	PORTD .7 = 0;
 	delay_ms(500);
 	PORTD .7 = 1;
+}
+
+// Function to open the door (motor and redled)
+void openDoor()
+{
+	// Turn on the red LED light
+	PORTB |= (1 << PORTB0);
+
+	// Motor movement for smooth opening
+	PORTB &= ~(1 << PORTB3);
+	delay_ms(500);
+	PORTB |= (1 << PORTB4);
+	delay_ms(1000);
+	PORTB &= ~(1 << PORTB4);
+}
+// Function to open the door (motor and redled)
+void closeDoor()
+{
+	// Turn off the red LED light
+	PORTB &= ~(1 << PORTB0);
+
+	// Motor movement for smooth closing
+	PORTB |= (1 << PORTB3);
+	delay_ms(500);
+	PORTB |= (1 << PORTB4);
+	delay_ms(1000);
+	PORTB &= ~(1 << PORTB4);
+	PORTB &= ~(1 << PORTB3);
+
+	// Return to initial position
+	PORTB |= (1 << PORTB3);
+	PORTB &= ~(1 << PORTB3);
 }
 
 // Interrupt functions
@@ -507,8 +565,11 @@ void openCloseDoorMode()
 						lcd_clear();
 						lcd_puts("Welcome, ");
 						lcd_puts(currentUser.name);
-						// Open the door
-						DDRB .0 = 1;
+						openDoor();
+						delay_ms(2000); // Wait for 2 seconds with the door open
+
+						closeDoor();
+						delay_ms(2000); // Wait for 2 seconds with the door closed
 						}
 					else
 						{
@@ -533,8 +594,5 @@ void openCloseDoorMode()
 		generateTone();
 		generateTone();
 		}
-	delay_ms(5000);
-	// close the door and clear lcd
-	DDRB .0 = 0;
 	lcd_clear();
 }

@@ -24,7 +24,7 @@ void main(void)
 	while (1)
 		{
 		input = keypad();
-		if (input == '*')
+		if (input == 10) // 10 is '*' in keypad
 			openCloseDoorMode();
 		}
 }
