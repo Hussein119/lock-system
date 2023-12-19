@@ -32,7 +32,7 @@ The Embedded Lock System is a collaborative project designed to implement a secu
 - Prioritize the Admin button by associating it with interrupt INT0.
 - Set the PC configuration with the Set PC button, utilizing interrupt INT1.
 
-> The project favors this Option because it assigns higher priority to the Admin button, followed logically by the > Set PC button, and then the Open button.
+> The project favors this Option because it assigns higher priority to the Admin button, followed logically by the Set PC button, and then the Open button.
 
 ## Getting Started
 
@@ -137,13 +137,12 @@ void main(void)
 	// Initialize interrupts for various modes
 	initializeIntrrupts();
 
-    // If user need to open the door must press '*' on the keypad
+	// If user need to open the door must press '*' on the keypad
 	while (1)
 		{
 		input = keypad();
-		if (input != '*')
-			continue;
-		openCloseDoorMode();
+		if (input == '*')
+			openCloseDoorMode();
 		}
 }
 
@@ -229,16 +228,14 @@ void initializeKeypad()
 // Function to initialize door
 void initializeDoor()
 {
-	// Set the door as input (by default, the door is closed)
-	DDRB .0 = 0;
+	DDRB .0 = 0; // Set the door as input (by default, the door is closed)
 	PORTB .0 = 1; // turn on pull-up resistance
 }
 
 // Function to initialize speaker
 void initializeSpeaker()
 {
-	// Set the speaker as an output
-	DDRD .7 = 1;
+	DDRD .7 = 1; // Set the speaker as an output
 	PORTD .7 = 1; // Set it to 1 initially
 }
 

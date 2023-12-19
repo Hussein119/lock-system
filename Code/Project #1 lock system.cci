@@ -1,6 +1,5 @@
-VERSION:3 SOURCE_TIMESTAMP:57928D6C
+VERSION:3 SOURCE_TIMESTAMP:579368F9
 NODE:I LEVEL:0 LINE:8 "E:\Seventh term\Embedded Systems\Project #1\Simulation & Code (main)\lock-system\Code\lockSys.h"
 NODE:F LEVEL:0 LINE:10 "main(void)"
 NODE:F LEVEL:0 LINE:32 "setPC(void)"
-NODE:F LEVEL:0 LINE:37 "openCloseDoor(void)"
-NODE:F LEVEL:0 LINE:42 "admin(void)"
+NODE:F LEVEL:0 LINE:37 "admin(void)"

@@ -1067,55 +1067,44 @@ _0x9F:
 ; 0000 0015 initializeIntrrupts();
 ;PCODE: $000003CB VOL: 0
 ; 0000 0016 
-; 0000 0017 while (1)
+; 0000 0017 // If user need to open the door must press '*' on the keypad
+; 0000 0018 while (1)
 ;PCODE: $000003CC VOL: 0
-; 0000 0018 {
-; 0000 0019 input = keypad();
+; 0000 0019 {
+; 0000 001A input = keypad();
 ;PCODE: $000003CD VOL: 0
 ;PCODE: $000003CE VOL: 0
-; 0000 001A if (input != '*')
+; 0000 001B if (input == '*')
 ;PCODE: $000003CF VOL: 0
 ;PCODE: $000003D0 VOL: 0
 ;PCODE: $000003D1 VOL: 0
-; 0000 001B continue;
-;PCODE: $000003D2 VOL: 0
 ; 0000 001C openCloseDoorMode();
+;PCODE: $000003D2 VOL: 0
+; 0000 001D }
 ;PCODE: $000003D3 VOL: 0
 ;PCODE: $000003D4 VOL: 0
-; 0000 001D }
 ;PCODE: $000003D5 VOL: 0
-;PCODE: $000003D6 VOL: 0
 ; 0000 001E }
+;PCODE: $000003D6 VOL: 0
 ;PCODE: $000003D7 VOL: 0
 ;PCODE: $000003D8 VOL: 0
-;PCODE: $000003D9 VOL: 0
 ;interrupt[3] void setPC(void)
 ; 0000 0021 {
+;PCODE: $000003D9 VOL: 0
 ;PCODE: $000003DA VOL: 0
-;PCODE: $000003DB VOL: 0
 ; 0000 0022 setPCMode();
-;PCODE: $000003DC VOL: 0
+;PCODE: $000003DB VOL: 0
 ; 0000 0023 }
+;PCODE: $000003DC VOL: 0
 ;PCODE: $000003DD VOL: 0
 ;PCODE: $000003DE VOL: 0
-;PCODE: $000003DF VOL: 0
-;interrupt[19] void openCloseDoor(void)
+;interrupt[2] void admin(void)
 ; 0000 0026 {
+;PCODE: $000003DF VOL: 0
 ;PCODE: $000003E0 VOL: 0
+; 0000 0027 adminMode();
 ;PCODE: $000003E1 VOL: 0
-; 0000 0027 openCloseDoorMode();
-;PCODE: $000003E2 VOL: 0
 ; 0000 0028 }
+;PCODE: $000003E2 VOL: 0
 ;PCODE: $000003E3 VOL: 0
 ;PCODE: $000003E4 VOL: 0
-;PCODE: $000003E5 VOL: 0
-;interrupt[2] void admin(void)
-; 0000 002B {
-;PCODE: $000003E6 VOL: 0
-;PCODE: $000003E7 VOL: 0
-; 0000 002C adminMode();
-;PCODE: $000003E8 VOL: 0
-; 0000 002D }
-;PCODE: $000003E9 VOL: 0
-;PCODE: $000003EA VOL: 0
-;PCODE: $000003EB VOL: 0

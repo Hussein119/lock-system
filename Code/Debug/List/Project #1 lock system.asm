@@ -1444,7 +1444,7 @@ __START_OF_CODE:
 	JMP  0x00
 	JMP  0x00
 	JMP  0x00
-	JMP  _openCloseDoor
+	JMP  0x00
 	JMP  0x00
 	JMP  0x00
 
@@ -1868,7 +1868,7 @@ _0x5E:
 _0x63:
 	SBIS 0x13,6
 	RJMP _0x63
-	LDI  R30,LOW(11)
+	LDI  R30,LOW(35)
 	RET
 _0x55:
 	RJMP _0x18
@@ -2486,19 +2486,20 @@ _main:
 ; 0000 0015 initializeIntrrupts();
 	RCALL _initializeIntrrupts
 ; 0000 0016 
-; 0000 0017 while (1)
+; 0000 0017 // If user need to open the door must press '*' on the keypad
+; 0000 0018 while (1)
 _0xAD:
-; 0000 0018 {
-; 0000 0019 input = keypad();
+; 0000 0019 {
+; 0000 001A input = keypad();
 	RCALL _keypad
 	MOV  R17,R30
-; 0000 001A if (input != '*')
+; 0000 001B if (input == '*')
 	CPI  R17,42
-	BRNE _0xAD
-; 0000 001B continue;
+	BRNE _0xB0
 ; 0000 001C openCloseDoorMode();
 	RCALL _openCloseDoorMode
 ; 0000 001D }
+_0xB0:
 	RJMP _0xAD
 ; 0000 001E }
 _0xB1:
@@ -2514,24 +2515,14 @@ _setPC:
 ; 0000 0023 }
 	RJMP _0xB2
 ; .FEND
-;interrupt[19] void openCloseDoor(void)
-; 0000 0026 {
-_openCloseDoor:
-; .FSTART _openCloseDoor
-	RCALL SUBOPT_0x16
-; 0000 0027 openCloseDoorMode();
-	RCALL _openCloseDoorMode
-; 0000 0028 }
-	RJMP _0xB2
-; .FEND
 ;interrupt[2] void admin(void)
-; 0000 002B {
+; 0000 0026 {
 _admin:
 ; .FSTART _admin
 	RCALL SUBOPT_0x16
-; 0000 002C adminMode();
+; 0000 0027 adminMode();
 	RCALL _adminMode
-; 0000 002D }
+; 0000 0028 }
 _0xB2:
 	LD   R30,Y+
 	OUT  SREG,R30
@@ -2932,7 +2923,7 @@ SUBOPT_0x15:
 	__ADDWRN 16,17,4
 	RET
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:22 WORDS
+;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:10 WORDS
 SUBOPT_0x16:
 	ST   -Y,R0
 	ST   -Y,R1

@@ -36,12 +36,12 @@ typedef struct
 // Array of user data
 User users[] =
 {
-		// name  ID   PC
-		{"Prof", "111", "203"},
-		{"Ahmed", "126", "129"},
-		{"Amr", "128", "325"},
-		{"Adel", "130", "426"},
-		{"Omer", "132", "079"},
+	// name  ID   PC
+	{"Prof", "111", "203"},
+	{"Ahmed", "126", "129"},
+	{"Amr", "128", "325"},
+	{"Adel", "130", "426"},
+	{"Omer", "132", "079"},
 };
 
 // Function to initialize hardware components
@@ -121,79 +121,79 @@ void initializeIntrrupts()
 char keypad()
 {
 	while (1)
-	{
+		{
 		PORTC .0 = 0;
 		PORTC .1 = 1;
 		PORTC .2 = 1;
 
 		switch (PINC)
-		{
-		case 0b11110110:
-			while (PINC .3 == 0)
-				;
-			return 1;
-		case 0b11101110:
-			while (PINC .4 == 0)
-				;
-			return 4;
-		case 0b11011110:
-			while (PINC .5 == 0)
-				;
-			return 7;
-		case 0b10111110:
-			while (PINC .6 == 0)
-				;
-			return '*';
-		}
+			{
+			case 0b11110110:
+				while (PINC .3 == 0)
+					;
+				return 1;
+			case 0b11101110:
+				while (PINC .4 == 0)
+					;
+				return 4;
+			case 0b11011110:
+				while (PINC .5 == 0)
+					;
+				return 7;
+			case 0b10111110:
+				while (PINC .6 == 0)
+					;
+				return '*';
+			}
 
 		PORTC .0 = 1;
 		PORTC .1 = 0;
 		PORTC .2 = 1;
 
 		switch (PINC)
-		{
-		case 0b11110101:
-			while (PINC .3 == 0)
-				;
-			return 2;
-		case 0b11101101:
-			while (PINC .4 == 0)
-				;
-			return 5;
-		case 0b11011101:
-			while (PINC .5 == 0)
-				;
-			return 8;
-		case 0b10111101:
-			while (PINC .6 == 0)
-				;
-			return 0;
-		}
+			{
+			case 0b11110101:
+				while (PINC .3 == 0)
+					;
+				return 2;
+			case 0b11101101:
+				while (PINC .4 == 0)
+					;
+				return 5;
+			case 0b11011101:
+				while (PINC .5 == 0)
+					;
+				return 8;
+			case 0b10111101:
+				while (PINC .6 == 0)
+					;
+				return 0;
+			}
 
 		PORTC .0 = 1;
 		PORTC .1 = 1;
 		PORTC .2 = 0;
 
 		switch (PINC)
-		{
-		case 0b11110011:
-			while (PINC .3 == 0)
-				;
-			return 3;
-		case 0b11101011:
-			while (PINC .4 == 0)
-				;
-			return 6;
-		case 0b11011011:
-			while (PINC .5 == 0)
-				;
-			return 9;
-		case 0b10111011:
-			while (PINC .6 == 0)
-				;
-			return 11;
+			{
+			case 0b11110011:
+				while (PINC .3 == 0)
+					;
+				return 3;
+			case 0b11101011:
+				while (PINC .4 == 0)
+					;
+				return 6;
+			case 0b11011011:
+				while (PINC .5 == 0)
+					;
+				return 9;
+			case 0b10111011:
+				while (PINC .6 == 0)
+					;
+				return '#';
+			}
 		}
-	}
 }
 
 // Function to read from EEPROM
@@ -232,11 +232,11 @@ void EE_ReadString(unsigned int address, char *buffer, unsigned int length)
 {
 	unsigned int i;
 	for (i = 0; i < length; ++i)
-	{
+		{
 		buffer[i] = EE_Read(address + i);
 		if (buffer[i] == '\0')
 			break;
-	}
+		}
 }
 
 // Function to initialize user data in EEPROM
@@ -245,7 +245,7 @@ void initializeUsers()
 	unsigned int address = 0;
 	int i;
 	for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
-	{
+		{
 		EE_WriteString(address, users[i].name);
 		address += sizeof(users[i].name);
 
@@ -254,14 +254,14 @@ void initializeUsers()
 
 		EE_WriteString(address, users[i].pc);
 		address += sizeof(users[i].pc);
-	}
+		}
 }
 
 // Function to display a message on the LCD
 void displayMessage(char *message, int delay_ms_value)
 {
 	lcd_clear();
-	lcd_puts(message);
+    lcd_puts(message);
 	delay_ms(delay_ms_value);
 }
 
@@ -287,8 +287,8 @@ void generateTone()
 	PORTD .7 = 1;
 	delay_ms(500);
 	PORTD .7 = 0;
-    delay_ms(500);
-    PORTD .7 = 1;
+	delay_ms(500);
+	PORTD .7 = 1;
 }
 
 // Interrupt functions
@@ -307,19 +307,19 @@ void adminMode()
 	int i;
 
 	for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
-	{
+		{
 		EE_ReadString(address, admin.name, sizeof(users[i].name));
 		if (strcmp(admin.name, "Prof") == 0)
-		{
+			{
 			address += sizeof(users[i].name);
 			EE_ReadString(address, admin.id, sizeof(admin.id));
 			address += sizeof(users[i].id);
 			EE_ReadString(address, admin.pc, sizeof(admin.pc));
 			adminPCAddress = address;
 			break;
-		}
+			}
 		address += sizeof(users[i].pc);
-	}
+		}
 
 	address = 0; // reset the address
 
@@ -327,58 +327,58 @@ void adminMode()
 	lcd_gotoxy(0, 1);
 
 	if (enterValueWithKeypad(enteredPC))
-	{
+		{
 
 		if (strcmp(admin.pc, enteredPC) == 0)
-		{
+			{
 			displayMessage("Enter Student ID: ", 1000);
 
 			if (enterValueWithKeypad(enteredStudentID))
-			{
+				{
 				int j;
 				for (j = 0; j < sizeof(users) / sizeof(users[0]); ++j)
-				{
+					{
 					address += sizeof(users[j].name);
 					EE_ReadString(address, student.id, sizeof(student.id));
 					address += sizeof(users[j].id);
 					if (strcmp(student.id, enteredStudentID) == 0)
-					{
+						{
 						displayMessage("Enter student's new PC: ", 1000);
 						if (enterValueWithKeypad(enteredNewPC))
-						{
+							{
 							// Set the new pc for this student, address is for student PC
 							EE_WriteString(address, enteredNewPC);
 							displayMessage("Student PC is stored", 3000);
 							userFound = 1;
 							break;
+							}
 						}
-					}
 					else if (strcmp(admin.id, enteredStudentID) == 0)
-					{
+						{
 						displayMessage("Enter your new PC: ", 1000);
 						lcd_gotoxy(0, 1);
 						if (enterValueWithKeypad(enteredNewPC))
-						{
+							{
 							// Set the new pc for this user (Admin),  address is for admin PC
 							EE_WriteString(adminPCAddress, enteredNewPC);
 							displayMessage("Your PC is stored", 3000);
 							userFound = 1;
 							break;
+							}
 						}
-					}
 					address += sizeof(users[i].pc);
+					}
 				}
 			}
 		}
-	}
 
 	if (!userFound)
-	{
+		{
 		displayMessage("Contact Admin", 3000);
 		// Two peeps alarm
 		generateTone();
 		generateTone();
-	}
+		}
 	delay_ms(5000);
 	lcd_clear();
 }
@@ -398,16 +398,16 @@ void setPCMode()
 	displayMessage("Enter your ID:", 1000);
 	lcd_gotoxy(0, 1);
 	if (enterValueWithKeypad(enteredID))
-	{
+		{
 		char enteredOldPC[5];
 		// search for the entered ID in the user data
 		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
-		{
+			{
 			address += sizeof(users[i].name);
 			EE_ReadString(address, currentUser.id, sizeof(currentUser.id)); // Read ID as a string
 
 			if (strcmp(currentUser.id, enteredID) == 0)
-			{
+				{
 				// ID found, verify the old PC
 				address += sizeof(currentUser.id);
 				EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc)); // Read PC as a string
@@ -415,9 +415,9 @@ void setPCMode()
 				lcd_gotoxy(0, 1);
 
 				if (enterValueWithKeypad(enteredOldPC))
-				{
-					if (strcmp(currentUser.pc, enteredOldPC) == 0)
 					{
+					if (strcmp(currentUser.pc, enteredOldPC) == 0)
+						{
 						// Old PC verified
 						displayMessage("Enter new PC:", 1000);
 						lcd_gotoxy(0, 1);
@@ -429,44 +429,44 @@ void setPCMode()
 						enterValueWithKeypad(reenteredNewPC);
 
 						if (strcmp(enteredNewPC, reenteredNewPC) == 0)
-						{
+							{
 							// If new PC entered correctly, store it
 							EE_WriteString(address, enteredNewPC);
 							displayMessage("New PC stored", 1000);
-						}
+							}
 						else
-						{
+							{
 							displayMessage("New PC mismatch, Contact admin", 1000);
 							generateTone();
 							generateTone();
+							}
 						}
-					}
 					else
-					{
+						{
 						displayMessage("Wrong old PC,   Contact admin", 1000);
 
 						generateTone();
 						generateTone();
+						}
 					}
-				}
 
 				userFound = 1;
 				break;
-			}
+				}
 
 			address += sizeof(users[i].id);
 			address += sizeof(users[i].pc);
-		}
+			}
 
 		if (!userFound)
-		{
+			{
 			displayMessage("Wrong ID", 1000);
 			generateTone();
 			generateTone();
-		}
+			}
 		delay_ms(5000);
 		lcd_clear();
-	}
+		}
 }
 
 // Function for open/close door mode
@@ -482,16 +482,16 @@ void openCloseDoorMode()
 	lcd_gotoxy(0, 1);
 
 	if (enterValueWithKeypad(enteredID))
-	{
+		{
 		char enteredPC[4];
 		for (i = 0; i < sizeof(users) / sizeof(users[0]); ++i)
-		{
+			{
 			EE_ReadString(address, currentUser.name, sizeof(users[i].name));
 			address += sizeof(users[i].name);
 			EE_ReadString(address, currentUser.id, sizeof(currentUser.id)); // Read ID as a string
 
 			if (strcmp(currentUser.id, enteredID) == 0)
-			{
+				{
 
 				address += sizeof(users[i].id);
 				EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc)); // Read PC as a string
@@ -500,38 +500,38 @@ void openCloseDoorMode()
 				lcd_gotoxy(0, 1);
 
 				if (enterValueWithKeypad(enteredPC))
-				{
-					if (strcmp(currentUser.pc, enteredPC) == 0)
 					{
+					if (strcmp(currentUser.pc, enteredPC) == 0)
+						{
 						lcd_clear();
 						lcd_puts("Welcome, ");
 						lcd_puts(currentUser.name);
 						// Open the door
 						DDRB .0 = 1;
-					}
+						}
 					else
-					{
+						{
 						displayMessage("Sorry wrong PC", 1000);
 						// one peep alarm
 						generateTone();
+						}
 					}
-				}
 				userFound = 1;
 				break;
-			}
+				}
 
 			address += sizeof(users[i].id);
 			address += sizeof(users[i].pc);
+			}
 		}
-	}
 
 	if (!userFound)
-	{
+		{
 		displayMessage("Wrong ID", 1000);
 		// Two peeps alarm
 		generateTone();
 		generateTone();
-	}
+		}
 	delay_ms(5000);
 	// close the door and clear lcd
 	DDRB .0 = 0;

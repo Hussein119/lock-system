@@ -19,14 +19,13 @@ void main(void)
 
 	// Initialize interrupts for various modes
 	initializeIntrrupts();
-    
-    // If user need to open the door must press '*' on the keypad
+
+	// If user need to open the door must press '*' on the keypad
 	while (1)
 		{
 		input = keypad();
-		if (input != '*')
-			continue;
-		openCloseDoorMode();
+		if (input == '*')
+			openCloseDoorMode();
 		}
 }
 
