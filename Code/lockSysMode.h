@@ -37,7 +37,7 @@ void adminMode()
 
     address = 0; // reset the address
 
-    displayMessage("Enter Admin PC: ", 1000);
+    displayMessage("Enter Admin PC: ", 0);
     lcd_gotoxy(0, 1);
 
     if (enterValueWithKeypad(enteredPC))
@@ -45,7 +45,7 @@ void adminMode()
 
         if (strcmp(admin.pc, enteredPC) == 0)
         {
-            displayMessage("Enter Student ID: ", 1000);
+            displayMessage("Enter Student ID: ", 0);
 
             if (enterValueWithKeypad(enteredStudentID))
             {
@@ -57,25 +57,25 @@ void adminMode()
                     address += sizeof(users[j].id);
                     if (strcmp(student.id, enteredStudentID) == 0)
                     {
-                        displayMessage("Enter student's new PC: ", 1000);
+                        displayMessage("Enter student's new PC: ", 0);
                         if (enterValueWithKeypad(enteredNewPC))
                         {
                             // Set the new pc for this student, address is for student PC
                             EE_WriteString(address, enteredNewPC);
-                            displayMessage("Student PC is stored", 3000);
+                            displayMessage("Student PC is stored", 1000);
                             userFound = 1;
                             break;
                         }
                     }
                     else if (strcmp(admin.id, enteredStudentID) == 0)
                     {
-                        displayMessage("Enter your new PC: ", 1000);
+                        displayMessage("Enter your new PC: ", 0);
                         lcd_gotoxy(0, 1);
                         if (enterValueWithKeypad(enteredNewPC))
                         {
                             // Set the new pc for this user (Admin),  address is for admin PC
                             EE_WriteString(adminPCAddress, enteredNewPC);
-                            displayMessage("Your PC is stored", 3000);
+                            displayMessage("Your PC is stored", 1000);
                             userFound = 1;
                             break;
                         }
@@ -88,7 +88,7 @@ void adminMode()
 
     if (!userFound)
     {
-        displayMessage("Contact Admin", 3000);
+        displayMessage("Contact Admin", 0);
         // Two peeps alarm
         generateTone();
         generateTone();
@@ -109,7 +109,7 @@ void setPCMode()
     char reenteredNewPC[5]; // define reenteredNewPC array to hold the Re-entered new PC
 
     lcd_clear();
-    displayMessage("Enter your ID:", 1000);
+    displayMessage("Enter your ID:", 0);
     lcd_gotoxy(0, 1);
     if (enterValueWithKeypad(enteredID))
     {
@@ -125,7 +125,7 @@ void setPCMode()
                 // ID found, verify the old PC
                 address += sizeof(currentUser.id);
                 EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc)); // Read PC as a string
-                displayMessage("Enter old PC:", 1000);
+                displayMessage("Enter old PC:", 0);
                 lcd_gotoxy(0, 1);
 
                 if (enterValueWithKeypad(enteredOldPC))
@@ -133,12 +133,12 @@ void setPCMode()
                     if (strcmp(currentUser.pc, enteredOldPC) == 0)
                     {
                         // Old PC verified
-                        displayMessage("Enter new PC:", 1000);
+                        displayMessage("Enter new PC:", 0);
                         lcd_gotoxy(0, 1);
                         enterValueWithKeypad(enteredNewPC);
 
                         lcd_clear();
-                        displayMessage("Re-enter new PC:", 1000);
+                        displayMessage("Re-enter new PC:", 0);
                         lcd_gotoxy(0, 1);
                         enterValueWithKeypad(reenteredNewPC);
 
@@ -174,7 +174,7 @@ void setPCMode()
 
         if (!userFound)
         {
-            displayMessage("Wrong ID", 1000);
+            displayMessage("Wrong ID", 0);
             generateTone();
             generateTone();
         }
@@ -192,7 +192,7 @@ void openCloseDoorMode()
     int userFound = 0;
     int i;
 
-    displayMessage("Enter your ID: ", 1000);
+    displayMessage("Enter your ID: ", 0);
     lcd_gotoxy(0, 1);
 
     if (enterValueWithKeypad(enteredID))
@@ -210,7 +210,7 @@ void openCloseDoorMode()
                 address += sizeof(users[i].id);
                 EE_ReadString(address, currentUser.pc, sizeof(currentUser.pc)); // Read PC as a string
 
-                displayMessage("Enter your PC: ", 1000);
+                displayMessage("Enter your PC: ", 0);
                 lcd_gotoxy(0, 1);
 
                 if (enterValueWithKeypad(enteredPC))
