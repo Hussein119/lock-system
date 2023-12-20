@@ -84,7 +84,7 @@ Test the lock system with the predefined password, verify LED indicators, and ex
 5. Motor (for door simulation)
 6. Speaker (Peeps alarm)
 7. Keypad 4x3
-8. Three Buttons for interrupts
+8. Two Buttons for interrupts
 
 ![Hardware](image.png)
 
