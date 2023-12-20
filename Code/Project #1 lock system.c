@@ -5,7 +5,8 @@
  * Author: Hos10
  */
 
-#include "lockSys.h"
+#include "lockSysInit.h"
+#include "lockSysMode.h"
 
 void main(void)
 {
@@ -22,11 +23,11 @@ void main(void)
 
 	// If user need to open the door must press '*' on the keypad
 	while (1)
-		{
+	{
 		input = keypad();
 		if (input == 10) // 10 is '*' in keypad
 			openCloseDoorMode();
-		}
+	}
 }
 
 interrupt[3] void setPC(void) //  vector no 3 -> INT1

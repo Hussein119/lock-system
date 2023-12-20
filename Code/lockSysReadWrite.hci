@@ -1,0 +1,6 @@
+VERSION:3 SOURCE_TIMESTAMP:57945E0C
+NODE:I LEVEL:0 LINE:1 "C:\cvavreval\inc\mega16.h"
+NODE:F LEVEL:0 LINE:9 "EE_Read(unsigned int address)"
+NODE:F LEVEL:0 LINE:19 "EE_Write(unsigned int address,unsigned char data)"
+NODE:F LEVEL:0 LINE:30 "EE_WriteString(unsigned int address,const unsigned char * str)"
+NODE:F LEVEL:0 LINE:40 "EE_ReadString(unsigned int address,unsigned char * buffer,unsigned int length)"

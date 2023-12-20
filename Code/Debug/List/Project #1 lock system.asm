@@ -1454,7 +1454,7 @@ _tbl10_G102:
 _tbl16_G102:
 	.DB  0x0,0x10,0x0,0x1,0x10,0x0,0x1,0x0
 
-_0x3:
+_0x16:
 	.DB  0x50,0x72,0x6F,0x66,0x0,0x0,0x31,0x31
 	.DB  0x31,0x0,0x32,0x30,0x33,0x0,0x41,0x68
 	.DB  0x6D,0x65,0x64,0x0,0x31,0x32,0x36,0x0
@@ -1514,7 +1514,7 @@ _0x2000003:
 __GLOBAL_INI_TBL:
 	.DW  0x45
 	.DW  _users
-	.DW  _0x3*2
+	.DW  _0x16*2
 
 	.DW  0x05
 	.DW  _0x8E
@@ -1694,6 +1694,104 @@ __GLOBAL_INI_END:
 	.SET power_ctrl_reg=mcucr
 	#endif
 
+	.CSEG
+_EE_Read:
+; .FSTART _EE_Read
+	ST   -Y,R17
+	ST   -Y,R16
+	MOVW R16,R26
+;	address -> R16,R17
+_0x3:
+	SBIC 0x1C,1
+	RJMP _0x3
+	__OUTWR 16,17,30
+	SBI  0x1C,0
+	IN   R30,0x1D
+	LD   R16,Y+
+	LD   R17,Y+
+	RET
+; .FEND
+_EE_Write:
+; .FSTART _EE_Write
+	RCALL __SAVELOCR4
+	MOV  R17,R26
+	__GETWRS 18,19,4
+;	address -> R18,R19
+;	data -> R17
+_0x8:
+	SBIC 0x1C,1
+	RJMP _0x8
+	__OUTWR 18,19,30
+	OUT  0x1D,R17
+	SBI  0x1C,2
+	SBI  0x1C,1
+	RJMP _0x2080004
+; .FEND
+_EE_WriteString:
+; .FSTART _EE_WriteString
+	RCALL SUBOPT_0x0
+;	address -> R18,R19
+;	*str -> R16,R17
+_0xF:
+	MOVW R26,R16
+	LD   R30,X
+	CPI  R30,0
+	BREQ _0x11
+	MOVW R30,R18
+	__ADDWRN 18,19,1
+	ST   -Y,R31
+	ST   -Y,R30
+	__ADDWRN 16,17,1
+	LD   R26,X
+	RCALL _EE_Write
+	RJMP _0xF
+_0x11:
+	ST   -Y,R19
+	ST   -Y,R18
+	LDI  R26,LOW(0)
+	RCALL _EE_Write
+	RJMP _0x2080004
+; .FEND
+_EE_ReadString:
+; .FSTART _EE_ReadString
+	RCALL __SAVELOCR6
+	MOVW R18,R26
+	__GETWRS 20,21,6
+;	address -> Y+8
+;	*buffer -> R20,R21
+;	length -> R18,R19
+;	i -> R16,R17
+	__GETWRN 16,17,0
+_0x13:
+	__CPWRR 16,17,18,19
+	BRSH _0x14
+	MOVW R30,R16
+	ADD  R30,R20
+	ADC  R31,R21
+	PUSH R31
+	PUSH R30
+	LDD  R26,Y+8
+	LDD  R27,Y+8+1
+	ADD  R26,R16
+	ADC  R27,R17
+	RCALL _EE_Read
+	POP  R26
+	POP  R27
+	ST   X,R30
+	MOVW R30,R16
+	ADD  R30,R20
+	ADC  R31,R21
+	LD   R30,Z
+	CPI  R30,0
+	BREQ _0x14
+	__ADDWRN 16,17,1
+	RJMP _0x13
+_0x14:
+	RCALL __LOADLOCR6
+	ADIW R28,10
+	RET
+; .FEND
+
 	.DSEG
 
 	.CSEG
@@ -1713,6 +1811,119 @@ _initializeKeypad:
 	LDI  R30,LOW(248)
 	OUT  0x15,R30
 	RET
+; .FEND
+_keypad:
+; .FSTART _keypad
+_0x17:
+	CBI  0x15,0
+	SBI  0x15,1
+	SBI  0x15,2
+	IN   R30,0x13
+	CPI  R30,LOW(0xF6)
+	BRNE _0x23
+_0x24:
+	SBIS 0x13,3
+	RJMP _0x24
+	LDI  R30,LOW(1)
+	RET
+_0x23:
+	CPI  R30,LOW(0xEE)
+	BRNE _0x27
+_0x28:
+	SBIS 0x13,4
+	RJMP _0x28
+	LDI  R30,LOW(4)
+	RET
+_0x27:
+	CPI  R30,LOW(0xDE)
+	BRNE _0x2B
+_0x2C:
+	SBIS 0x13,5
+	RJMP _0x2C
+	LDI  R30,LOW(7)
+	RET
+_0x2B:
+	CPI  R30,LOW(0xBE)
+	BRNE _0x22
+_0x30:
+	SBIS 0x13,6
+	RJMP _0x30
+	LDI  R30,LOW(10)
+	RET
+_0x22:
+	SBI  0x15,0
+	CBI  0x15,1
+	SBI  0x15,2
+	IN   R30,0x13
+	CPI  R30,LOW(0xF5)
+	BRNE _0x3C
+_0x3D:
+	SBIS 0x13,3
+	RJMP _0x3D
+	LDI  R30,LOW(2)
+	RET
+_0x3C:
+	CPI  R30,LOW(0xED)
+	BRNE _0x40
+_0x41:
+	SBIS 0x13,4
+	RJMP _0x41
+	LDI  R30,LOW(5)
+	RET
+_0x40:
+	CPI  R30,LOW(0xDD)
+	BRNE _0x44
+_0x45:
+	SBIS 0x13,5
+	RJMP _0x45
+	LDI  R30,LOW(8)
+	RET
+_0x44:
+	CPI  R30,LOW(0xBD)
+	BRNE _0x3B
+_0x49:
+	SBIS 0x13,6
+	RJMP _0x49
+	LDI  R30,LOW(0)
+	RET
+_0x3B:
+	SBI  0x15,0
+	SBI  0x15,1
+	CBI  0x15,2
+	IN   R30,0x13
+	CPI  R30,LOW(0xF3)
+	BRNE _0x55
+_0x56:
+	SBIS 0x13,3
+	RJMP _0x56
+	LDI  R30,LOW(3)
+	RET
+_0x55:
+	CPI  R30,LOW(0xEB)
+	BRNE _0x59
+_0x5A:
+	SBIS 0x13,4
+	RJMP _0x5A
+	LDI  R30,LOW(6)
+	RET
+_0x59:
+	CPI  R30,LOW(0xDB)
+	BRNE _0x5D
+_0x5E:
+	SBIS 0x13,5
+	RJMP _0x5E
+	LDI  R30,LOW(9)
+	RET
+_0x5D:
+	CPI  R30,LOW(0xBB)
+	BRNE _0x54
+_0x62:
+	SBIS 0x13,6
+	RJMP _0x62
+	LDI  R30,LOW(11)
+	RET
+_0x54:
+	RJMP _0x17
 ; .FEND
 _initializeDoor:
 ; .FSTART _initializeDoor
@@ -1760,215 +1971,6 @@ _initializeIntrrupts:
 	IN   R30,0x3B
 	ORI  R30,0x40
 	OUT  0x3B,R30
-	RET
-; .FEND
-_keypad:
-; .FSTART _keypad
-_0x14:
-	CBI  0x15,0
-	SBI  0x15,1
-	SBI  0x15,2
-	IN   R30,0x13
-	CPI  R30,LOW(0xF6)
-	BRNE _0x20
-_0x21:
-	SBIS 0x13,3
-	RJMP _0x21
-	LDI  R30,LOW(1)
-	RET
-_0x20:
-	CPI  R30,LOW(0xEE)
-	BRNE _0x24
-_0x25:
-	SBIS 0x13,4
-	RJMP _0x25
-	LDI  R30,LOW(4)
-	RET
-_0x24:
-	CPI  R30,LOW(0xDE)
-	BRNE _0x28
-_0x29:
-	SBIS 0x13,5
-	RJMP _0x29
-	LDI  R30,LOW(7)
-	RET
-_0x28:
-	CPI  R30,LOW(0xBE)
-	BRNE _0x1F
-_0x2D:
-	SBIS 0x13,6
-	RJMP _0x2D
-	LDI  R30,LOW(10)
-	RET
-_0x1F:
-	SBI  0x15,0
-	CBI  0x15,1
-	SBI  0x15,2
-	IN   R30,0x13
-	CPI  R30,LOW(0xF5)
-	BRNE _0x39
-_0x3A:
-	SBIS 0x13,3
-	RJMP _0x3A
-	LDI  R30,LOW(2)
-	RET
-_0x39:
-	CPI  R30,LOW(0xED)
-	BRNE _0x3D
-_0x3E:
-	SBIS 0x13,4
-	RJMP _0x3E
-	LDI  R30,LOW(5)
-	RET
-_0x3D:
-	CPI  R30,LOW(0xDD)
-	BRNE _0x41
-_0x42:
-	SBIS 0x13,5
-	RJMP _0x42
-	LDI  R30,LOW(8)
-	RET
-_0x41:
-	CPI  R30,LOW(0xBD)
-	BRNE _0x38
-_0x46:
-	SBIS 0x13,6
-	RJMP _0x46
-	LDI  R30,LOW(0)
-	RET
-_0x38:
-	SBI  0x15,0
-	SBI  0x15,1
-	CBI  0x15,2
-	IN   R30,0x13
-	CPI  R30,LOW(0xF3)
-	BRNE _0x52
-_0x53:
-	SBIS 0x13,3
-	RJMP _0x53
-	LDI  R30,LOW(3)
-	RET
-_0x52:
-	CPI  R30,LOW(0xEB)
-	BRNE _0x56
-_0x57:
-	SBIS 0x13,4
-	RJMP _0x57
-	LDI  R30,LOW(6)
-	RET
-_0x56:
-	CPI  R30,LOW(0xDB)
-	BRNE _0x5A
-_0x5B:
-	SBIS 0x13,5
-	RJMP _0x5B
-	LDI  R30,LOW(9)
-	RET
-_0x5A:
-	CPI  R30,LOW(0xBB)
-	BRNE _0x51
-_0x5F:
-	SBIS 0x13,6
-	RJMP _0x5F
-	LDI  R30,LOW(11)
-	RET
-_0x51:
-	RJMP _0x14
-; .FEND
-_EE_Read:
-; .FSTART _EE_Read
-	ST   -Y,R17
-	ST   -Y,R16
-	MOVW R16,R26
-;	address -> R16,R17
-_0x62:
-	SBIC 0x1C,1
-	RJMP _0x62
-	__OUTWR 16,17,30
-	SBI  0x1C,0
-	IN   R30,0x1D
-	LD   R16,Y+
-	LD   R17,Y+
-	RET
-; .FEND
-_EE_Write:
-; .FSTART _EE_Write
-	RCALL __SAVELOCR4
-	MOV  R17,R26
-	__GETWRS 18,19,4
-;	address -> R18,R19
-;	data -> R17
-_0x67:
-	SBIC 0x1C,1
-	RJMP _0x67
-	__OUTWR 18,19,30
-	OUT  0x1D,R17
-	SBI  0x1C,2
-	SBI  0x1C,1
-	RJMP _0x2080004
-; .FEND
-_EE_WriteString:
-; .FSTART _EE_WriteString
-	RCALL SUBOPT_0x0
-;	address -> R18,R19
-;	*str -> R16,R17
-_0x6E:
-	MOVW R26,R16
-	LD   R30,X
-	CPI  R30,0
-	BREQ _0x70
-	MOVW R30,R18
-	__ADDWRN 18,19,1
-	ST   -Y,R31
-	ST   -Y,R30
-	__ADDWRN 16,17,1
-	LD   R26,X
-	RCALL _EE_Write
-	RJMP _0x6E
-_0x70:
-	ST   -Y,R19
-	ST   -Y,R18
-	LDI  R26,LOW(0)
-	RCALL _EE_Write
-	RJMP _0x2080004
-; .FEND
-_EE_ReadString:
-; .FSTART _EE_ReadString
-	RCALL __SAVELOCR6
-	MOVW R18,R26
-	__GETWRS 20,21,6
-;	address -> Y+8
-;	*buffer -> R20,R21
-;	length -> R18,R19
-;	i -> R16,R17
-	__GETWRN 16,17,0
-_0x72:
-	__CPWRR 16,17,18,19
-	BRSH _0x73
-	MOVW R30,R16
-	ADD  R30,R20
-	ADC  R31,R21
-	PUSH R31
-	PUSH R30
-	LDD  R26,Y+8
-	LDD  R27,Y+8+1
-	ADD  R26,R16
-	ADC  R27,R17
-	RCALL _EE_Read
-	POP  R26
-	POP  R27
-	ST   X,R30
-	MOVW R30,R16
-	ADD  R30,R20
-	ADC  R31,R21
-	LD   R30,Z
-	CPI  R30,0
-	BREQ _0x73
-	__ADDWRN 16,17,1
-	RJMP _0x72
-_0x73:
-	RCALL __LOADLOCR6
-	ADIW R28,10
 	RET
 ; .FEND
 _initializeUsers:
@@ -2554,63 +2556,63 @@ _0xB0:
 _0xA7:
 	.BYTE 0x42
 ;void main(void)
-; 0000 000B {
+; 0000 000C {
 
 	.CSEG
 _main:
 ; .FSTART _main
-; 0000 000C char input;
-; 0000 000D 
-; 0000 000E // Initialize Hardware
-; 0000 000F initializeHardware();
+; 0000 000D char input;
+; 0000 000E 
+; 0000 000F // Initialize Hardware
+; 0000 0010 initializeHardware();
 ;	input -> R17
 	RCALL _initializeHardware
-; 0000 0010 
-; 0000 0011 // Initialize user data in EEPROM
-; 0000 0012 initializeUsers();
+; 0000 0011 
+; 0000 0012 // Initialize user data in EEPROM
+; 0000 0013 initializeUsers();
 	RCALL _initializeUsers
-; 0000 0013 
-; 0000 0014 // Initialize interrupts for various modes
-; 0000 0015 initializeIntrrupts();
+; 0000 0014 
+; 0000 0015 // Initialize interrupts for various modes
+; 0000 0016 initializeIntrrupts();
 	RCALL _initializeIntrrupts
-; 0000 0016 
-; 0000 0017 // If user need to open the door must press '*' on the keypad
-; 0000 0018 while (1)
+; 0000 0017 
+; 0000 0018 // If user need to open the door must press '*' on the keypad
+; 0000 0019 while (1)
 _0xB1:
-; 0000 0019 {
-; 0000 001A input = keypad();
+; 0000 001A {
+; 0000 001B input = keypad();
 	RCALL _keypad
 	MOV  R17,R30
-; 0000 001B if (input == 10) // 10 is '*' in keypad
+; 0000 001C if (input == 10) // 10 is '*' in keypad
 	CPI  R17,10
 	BRNE _0xB4
-; 0000 001C openCloseDoorMode();
+; 0000 001D openCloseDoorMode();
 	RCALL _openCloseDoorMode
-; 0000 001D }
+; 0000 001E }
 _0xB4:
 	RJMP _0xB1
-; 0000 001E }
+; 0000 001F }
 _0xB5:
 	RJMP _0xB5
 ; .FEND
 ;interrupt[3] void setPC(void)
-; 0000 0021 {
+; 0000 0022 {
 _setPC:
 ; .FSTART _setPC
 	RCALL SUBOPT_0x17
-; 0000 0022 setPCMode();
+; 0000 0023 setPCMode();
 	RCALL _setPCMode
-; 0000 0023 }
+; 0000 0024 }
 	RJMP _0xB9
 ; .FEND
 ;interrupt[2] void admin(void)
-; 0000 0026 {
+; 0000 0027 {
 _admin:
 ; .FSTART _admin
 	RCALL SUBOPT_0x17
-; 0000 0027 adminMode();
+; 0000 0028 adminMode();
 	RCALL _adminMode
-; 0000 0028 }
+; 0000 0029 }
 _0xB9:
 	LD   R30,Y+
 	OUT  SREG,R30

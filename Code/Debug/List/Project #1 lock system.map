@@ -18,16 +18,16 @@ _lcd_maxx                                                                       
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-initializeHardware                                                                0x00174      6
-initializeKeypad                                                                  0x0017A      5
-initializeDoor                                                                    0x0017F      5
-initializeSpeaker                                                                 0x00184      2
-initializeIntrrupts                                                               0x00186     32
-keypad                                                                            0x001A6     85
-EE_Read                                                                           0x001FB     12
-EE_Write                                                                          0x00207     12
-EE_WriteString                                                                    0x00213     20
-EE_ReadString                                                                     0x00227     34
+EE_Read                                                                           0x00174     12
+EE_Write                                                                          0x00180     12
+EE_WriteString                                                                    0x0018C     20
+EE_ReadString                                                                     0x001A0     34
+initializeHardware                                                                0x001C2      6
+initializeKeypad                                                                  0x001C8      5
+keypad                                                                            0x001CD     85
+initializeDoor                                                                    0x00222      5
+initializeSpeaker                                                                 0x00227      2
+initializeIntrrupts                                                               0x00229     32
 initializeUsers                                                                   0x00249     26
 displayMessage                                                                    0x00263      9
 enterValueWithKeypad                                                              0x0026C     88
